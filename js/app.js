@@ -77,10 +77,10 @@
     const track = $('.journey__track');
     if (!track || typeof JOURNEY_PHASES === 'undefined') return;
 
-    // Keep the line element
-    const line = $('.journey__line', track);
+    // Keep the path element
+    const pathEl = $('.journey__path', track);
     track.innerHTML = '';
-    if (line) track.appendChild(line);
+    if (pathEl) track.appendChild(pathEl);
 
     JOURNEY_PHASES.forEach((phase, index) => {
       const isLeft = index % 2 === 0;
@@ -113,7 +113,15 @@
                 .map(
                   (item) => `
                 ${
-                  item.available
+                  item.available && item.serviceType === 'external'
+                    ? `<a href="#" class="journey__item journey__item--available journey__item--external" data-service-slug="${item.slug}">
+                        <span aria-hidden="true">→</span>
+                        <span>${item.title}</span>
+                        <span class="journey__item-badge">
+                          <span class="badge badge--external">Externer Service</span>
+                        </span>
+                       </a>`
+                    : item.available
                     ? `<a href="/${item.slug}" class="journey__item journey__item--available">
                         <span aria-hidden="true">→</span>
                         <span>${item.title}</span>
@@ -157,19 +165,21 @@
       // Entrance animation
       if (!prefersReducedMotion) {
         phaseEl.style.opacity = '0';
-        phaseEl.style.transform = isLeft ? 'translateX(-20px)' : 'translateX(20px)';
+        // On mobile, avoid horizontal shifts so the winding path stays
+        // aligned with the left-rail nodes from the very start.
+        phaseEl.style.transform = isMobile() ? 'translateY(20px)' : (isLeft ? 'translateX(-20px)' : 'translateX(20px)');
         phaseEl.style.transition = `opacity ${500 + index * 60}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${500 + index * 60}ms cubic-bezier(0.16, 1, 0.3, 1)`;
       }
     });
 
-    // Intersection Observer for entrance animations
+    // Entrance animations
     if (!prefersReducedMotion && 'IntersectionObserver' in window) {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateX(0)';
+              entry.target.style.transform = 'translate(0, 0)';
               observer.unobserve(entry.target);
             }
           });
@@ -178,6 +188,13 @@
       );
 
       $$('.journey__phase', track).forEach((phase) => observer.observe(phase));
+
+      // After the entrance animations run off, redraw the path through the
+      // settled node positions for a crisp match with the nodes.
+      const maxDelay = 500 + JOURNEY_PHASES.length * 60;
+      setTimeout(() => {
+        drawJourneyPath();
+      }, maxDelay + 200);
     } else {
       // Fallback: show all
       $$('.journey__phase', track).forEach((phase) => {
@@ -185,6 +202,110 @@
         phase.style.transform = 'translateX(0)';
       });
     }
+
+    // Draw the winding path through the node centers
+    drawJourneyPath();
+  }
+
+  // ============================================
+  // JOURNEY — winding path (SVG)
+  // Builds a smooth S-curved path that weaves
+  // through the node centers, alternating left
+  // and right of the centre axis.
+  // ============================================
+  function drawJourneyPath() {
+    const track = $('.journey__track');
+    if (!track) return;
+
+    // Remove existing dynamic path
+    const existing = track.querySelector('.journey__path--dynamic');
+    if (existing) existing.remove();
+
+    const nodes = $$('.journey__node', track);
+    if (nodes.length < 2) return;
+
+    // Node centers relative to the track
+    const trackRect = track.getBoundingClientRect();
+    const points = nodes.map((node) => {
+      const r = node.getBoundingClientRect();
+      return {
+        x: r.left - trackRect.left + r.width / 2,
+        y: r.top - trackRect.top + r.height / 2,
+      };
+    });
+
+    const margin = isMobile() ? 16 : 60;
+    const pts = points.map((p, i) => {
+      // Alternate the curve sag to the left/right for a wavy road
+      const x = isMobile() ? Math.max(16, Math.min(trackRect.width - 16, p.x)) : p.x;
+      return { ...p, x };
+    });
+
+    // Build a smooth cubic bezier path through points
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i];
+      const p1 = pts[i + 1];
+      const dir = i % 2 === 0 ? 1 : -1;
+      const ctrl = margin * 1.2;
+      d += ` C ${p0.x + ctrl * dir} ${p0.y + (p1.y - p0.y) * 0.3}, ${p1.x + ctrl * dir * -1} ${p1.y - (p1.y - p0.y) * 0.3}, ${p1.x} ${p1.y}`;
+    }
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const pathWrap = document.createElementNS(NS, 'svg');
+    pathWrap.setAttribute('class', 'journey__path journey__path--dynamic');
+    pathWrap.setAttribute('viewBox', `0 0 ${trackRect.width} ${trackRect.height}`);
+    pathWrap.setAttribute('preserveAspectRatio', 'none');
+    pathWrap.style.width = trackRect.width + 'px';
+    pathWrap.style.height = trackRect.height + 'px';
+
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'journey__path-line');
+
+    // Colour the whole path with a gradient approximating the phase colours
+    const gradient = document.createElementNS(NS, 'linearGradient');
+    gradient.setAttribute('id', 'journeyGradient');
+    gradient.setAttribute('x1', '0%');
+    gradient.setAttribute('y1', '0%');
+    gradient.setAttribute('x2', '0%');
+    gradient.setAttribute('y2', '100%');
+
+    const stops = [
+      { off: '0%', color: '#3B82F6' },
+      { off: '12%', color: '#8B5CF6' },
+      { off: '25%', color: '#06B6D4' },
+      { off: '37%', color: '#10B981' },
+      { off: '50%', color: '#F59E0B' },
+      { off: '62%', color: '#EF4444' },
+      { off: '75%', color: '#EC4899' },
+      { off: '87%', color: '#6366F1' },
+      { off: '100%', color: '#475569' },
+    ];
+    stops.forEach((s) => {
+      const stop = document.createElementNS(NS, 'stop');
+      stop.setAttribute('offset', s.off);
+      stop.setAttribute('stop-color', s.color);
+      gradient.appendChild(stop);
+    });
+
+    pathWrap.appendChild(gradient);
+    path.setAttribute('stroke', `url(#journeyGradient)`);
+    pathWrap.appendChild(path);
+    track.appendChild(pathWrap);
+
+    // Animate dashes flowing along the path (desktop only, respect reduced motion)
+    if (!prefersReducedMotion && !isMobile()) {
+      track.classList.add('journey__track--animated');
+    }
+  }
+
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  function onResize() {
+    drawJourneyPath();
   }
 
   // ============================================
@@ -298,6 +419,15 @@
     renderJourney();
     renderServices();
     initSmoothScroll();
+
+    // Redraw the path on resize (debounced)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        onResize();
+      }, 150);
+    });
 
     // Handle hash on load (e.g. index.html#journey)
     if (window.location.hash) {

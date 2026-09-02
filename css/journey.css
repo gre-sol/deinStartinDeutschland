@@ -29,33 +29,43 @@
   color: var(--color-text);
 }
 
-/* ---- Desktop: S-curve layout ---- */
+/* ---- Desktop: winding road / S-curve layout ---- */
 .journey__track {
   position: relative;
   max-width: 900px;
   margin: 0 auto;
 }
 
-/* Vertical line */
-.journey__line {
+/* Winding path (SVG) drawn behind the nodes */
+.journey__path {
   position: absolute;
-  left: 50%;
   top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(
-    to bottom,
-    var(--phase-ankommen) 0%,
-    var(--phase-wohnen) 14%,
-    var(--phase-aufenthalt) 28%,
-    var(--phase-finanzen) 42%,
-    var(--phase-mobilitaet) 57%,
-    var(--phase-versicherungen) 71%,
-    var(--phase-integration) 85%,
-    var(--phase-alltag) 100%
-  );
-  transform: translateX(-50%);
-  border-radius: 2px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.journey__path-line {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  opacity: 0.55;
+}
+
+/* Animated dashes flowing along the path */
+@keyframes journey-flow {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.journey__track--animated .journey__path-line {
+  animation: journey-flow 1.2s linear infinite;
 }
 
 /* ---- Phase node ---- */
@@ -117,6 +127,7 @@
 .journey__phase[data-phase="versicherungen"] .journey__node { border-color: var(--phase-versicherungen); }
 .journey__phase[data-phase="integration"] .journey__node { border-color: var(--phase-integration); }
 .journey__phase[data-phase="alltag"] .journey__node { border-color: var(--phase-alltag); }
+.journey__phase[data-phase="verlassen"] .journey__node { border-color: var(--phase-verlassen); }
 
 .journey__phase--active[data-phase="ankommen"] .journey__node { background: var(--phase-ankommen-bg); }
 .journey__phase--active[data-phase="wohnen"] .journey__node { background: var(--phase-wohnen-bg); }
@@ -126,6 +137,7 @@
 .journey__phase--active[data-phase="versicherungen"] .journey__node { background: var(--phase-versicherungen-bg); }
 .journey__phase--active[data-phase="integration"] .journey__node { background: var(--phase-integration-bg); }
 .journey__phase--active[data-phase="alltag"] .journey__node { background: var(--phase-alltag-bg); }
+.journey__phase--active[data-phase="verlassen"] .journey__node { background: var(--phase-verlassen-bg); }
 
 /* ---- Phase card ---- */
 .journey__card {
@@ -163,6 +175,8 @@
 .journey__phase[data-phase="integration"].journey__phase--active .journey__card { border-color: var(--phase-integration-border); }
 .journey__phase[data-phase="alltag"] .journey__card:hover,
 .journey__phase[data-phase="alltag"].journey__phase--active .journey__card { border-color: var(--phase-alltag-border); }
+.journey__phase[data-phase="verlassen"] .journey__card:hover,
+.journey__phase[data-phase="verlassen"].journey__phase--active .journey__card { border-color: var(--phase-verlassen-border); }
 
 .journey__card-header {
   display: flex;
@@ -304,10 +318,7 @@
    ============================================ */
 
 @media (max-width: 768px) {
-  .journey__line {
-    left: 28px;
-  }
-
+  /* The path is drawn by JS through the node centres (left rail) */
   .journey__phase--left,
   .journey__phase--right {
     flex-direction: row;

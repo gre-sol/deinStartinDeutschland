@@ -60,6 +60,10 @@
   --phase-alltag-bg: #EEF2FF;
   --phase-alltag-border: #C7D2FE;
 
+  --phase-verlassen: #475569;
+  --phase-verlassen-bg: #F8FAFC;
+  --phase-verlassen-border: #E2E8F0;
+
   /* ---- Typography ---- */
   --font-sans: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'DM Sans', 'Inter', sans-serif;

@@ -289,6 +289,11 @@ body.nav-open {
   color: var(--color-text-tertiary);
 }
 
+.badge--external {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-success);
+}
+
 /* ============================================
    BUTTONS
    ============================================ */
