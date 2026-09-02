@@ -1,0 +1,217 @@
+/* ============================================
+   SERVICES PAGE
+   ============================================ */
+
+.services-hero {
+  padding-top: calc(var(--header-height) + var(--space-16));
+  padding-bottom: var(--space-12);
+  position: relative;
+}
+
+.services-hero::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(ellipse, var(--color-primary-lighter) 0%, transparent 70%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.services-hero__inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.services-hero__title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: var(--space-4);
+}
+
+.services-hero__subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: var(--leading-relaxed);
+}
+
+/* ---- Service Grid ---- */
+.services-grid {
+  padding-bottom: var(--space-24);
+}
+
+.services-grid__inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-6);
+}
+
+/* ---- Service Card ---- */
+.service-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  transition: all var(--duration-normal) var(--ease-out);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-in-out);
+}
+
+.service-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-3px);
+  border-color: transparent;
+}
+
+.service-card:hover::before {
+  opacity: 1;
+}
+
+/* Phase color accents */
+.service-card[data-color="ankommen"]::before { background: var(--phase-ankommen); }
+.service-card[data-color="wohnen"]::before { background: var(--phase-wohnen); }
+.service-card[data-color="aufenthalt"]::before { background: var(--phase-aufenthalt); }
+.service-card[data-color="finanzen"]::before { background: var(--phase-finanzen); }
+.service-card[data-color="mobilitaet"]::before { background: var(--phase-mobilitaet); }
+.service-card[data-color="versicherungen"]::before { background: var(--phase-versicherungen); }
+.service-card[data-color="integration"]::before { background: var(--phase-integration); }
+.service-card[data-color="alltag"]::before { background: var(--phase-alltag); }
+
+.service-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: var(--space-5);
+  transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.service-card:hover .service-card__icon {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.service-card[data-color="ankommen"] .service-card__icon { background: var(--phase-ankommen-bg); }
+.service-card[data-color="wohnen"] .service-card__icon { background: var(--phase-wohnen-bg); }
+.service-card[data-color="aufenthalt"] .service-card__icon { background: var(--phase-aufenthalt-bg); }
+.service-card[data-color="finanzen"] .service-card__icon { background: var(--phase-finanzen-bg); }
+.service-card[data-color="mobilitaet"] .service-card__icon { background: var(--phase-mobilitaet-bg); }
+.service-card[data-color="versicherungen"] .service-card__icon { background: var(--phase-versicherungen-bg); }
+.service-card[data-color="integration"] .service-card__icon { background: var(--phase-integration-bg); }
+.service-card[data-color="alltag"] .service-card__icon { background: var(--phase-alltag-bg); }
+
+.service-card__title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.service-card__desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-6);
+  flex: 1;
+}
+
+.service-card__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.service-card__item {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  background: var(--color-bg-alt);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  transition: all var(--duration-fast) var(--ease-in-out);
+}
+
+.service-card__item--available {
+  background: var(--color-primary-surface);
+  color: var(--color-primary);
+}
+
+.service-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.service-card__cta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  transition: color var(--duration-fast) var(--ease-in-out);
+}
+
+.service-card:hover .service-card__cta {
+  color: var(--color-primary);
+}
+
+.service-card__cta-arrow {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.service-card:hover .service-card__cta-arrow {
+  transform: translateX(4px);
+}
+
+.service-card__count {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .services-hero {
+    padding-top: calc(var(--header-height) + var(--space-10));
+    padding-bottom: var(--space-8);
+  }
+
+  .services-grid__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .service-card {
+    padding: var(--space-6);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .services-grid__inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

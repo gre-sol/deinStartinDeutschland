@@ -1,0 +1,153 @@
+/* ============================================
+   DESIGN TOKENS — Dein Start in Deutschland
+   ============================================ */
+
+:root {
+  /* ---- Brand Colors ---- */
+  --color-primary: #2563EB;
+  --color-primary-light: #3B82F6;
+  --color-primary-lighter: #DBEAFE;
+  --color-primary-dark: #1D4ED8;
+  --color-primary-surface: #EFF6FF;
+
+  /* ---- Neutrals ---- */
+  --color-bg: #FAFBFC;
+  --color-bg-alt: #F1F5F9;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F8FAFC;
+  --color-border: #E2E8F0;
+  --color-border-light: #F1F5F9;
+  --color-text: #1E293B;
+  --color-text-secondary: #64748B;
+  --color-text-tertiary: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+
+  /* ---- Semantic ---- */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  /* ---- Journey Phase Colors ---- */
+  --phase-ankommen: #3B82F6;
+  --phase-ankommen-bg: #EFF6FF;
+  --phase-ankommen-border: #BFDBFE;
+
+  --phase-wohnen: #8B5CF6;
+  --phase-wohnen-bg: #F5F3FF;
+  --phase-wohnen-border: #DDD6FE;
+
+  --phase-aufenthalt: #06B6D4;
+  --phase-aufenthalt-bg: #ECFEFF;
+  --phase-aufenthalt-border: #A5F3FC;
+
+  --phase-finanzen: #10B981;
+  --phase-finanzen-bg: #ECFDF5;
+  --phase-finanzen-border: #A7F3D0;
+
+  --phase-mobilitaet: #F59E0B;
+  --phase-mobilitaet-bg: #FFFBEB;
+  --phase-mobilitaet-border: #FDE68A;
+
+  --phase-versicherungen: #EF4444;
+  --phase-versicherungen-bg: #FEF2F2;
+  --phase-versicherungen-border: #FECACA;
+
+  --phase-integration: #EC4899;
+  --phase-integration-bg: #FDF2F8;
+  --phase-integration-border: #FBCFE8;
+
+  --phase-alltag: #6366F1;
+  --phase-alltag-bg: #EEF2FF;
+  --phase-alltag-border: #C7D2FE;
+
+  /* ---- Typography ---- */
+  --font-sans: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'DM Sans', 'Inter', sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---- Spacing ---- */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---- Radii ---- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0,0,0,0.15);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
+  --shadow-card-hover: 0 8px 25px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+
+  /* ---- Transitions ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+
+  /* ---- Layout ---- */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1200px;
+  --container-2xl: 1400px;
+  --header-height: 72px;
+
+  /* ---- Z-Index ---- */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}
+
+/* ---- Dark Mode (prepared) ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Future: dark mode tokens */
+  }
+}
