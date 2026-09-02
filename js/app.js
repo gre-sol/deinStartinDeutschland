@@ -162,62 +162,75 @@
         }
       });
 
-      // Entrance animation
+      // Entrance / scroll-reveal state: cards & nodes appear one after another
       if (!prefersReducedMotion) {
+        phaseEl.setAttribute('data-revealed', 'false');
         phaseEl.style.opacity = '0';
-        // On mobile, avoid horizontal shifts so the winding path stays
-        // aligned with the left-rail nodes from the very start.
-        phaseEl.style.transform = isMobile() ? 'translateY(20px)' : (isLeft ? 'translateX(-20px)' : 'translateX(20px)');
-        phaseEl.style.transition = `opacity ${500 + index * 60}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${500 + index * 60}ms cubic-bezier(0.16, 1, 0.3, 1)`;
+        phaseEl.style.transform = isMobile() ? 'translateY(24px)' : (isLeft ? 'translateX(-24px)' : 'translateX(24px)');
+        phaseEl.style.transition = `opacity 550ms cubic-bezier(0.16, 1, 0.3, 1), transform 550ms cubic-bezier(0.16, 1, 0.3, 1)`;
       }
     });
 
-    // Entrance animations
+    // Scroll-reveal + active-station tracking
     if (!prefersReducedMotion && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
+      const revealObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translate(0, 0)';
-              observer.unobserve(entry.target);
+              const ph = entry.target;
+              const delay = $$('.journey__phase[data-revealed="false"]', track).indexOf(ph) * 90;
+              setTimeout(() => {
+                ph.style.opacity = '1';
+                ph.style.transform = 'translate(0, 0)';
+                ph.setAttribute('data-revealed', 'true');
+              }, delay);
+              revealObserver.unobserve(ph);
             }
           });
         },
-        { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+        { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
       );
 
-      $$('.journey__phase', track).forEach((phase) => observer.observe(phase));
+      $$('.journey__phase', track).forEach((phase) => revealObserver.observe(phase));
 
-      // After the entrance animations run off, redraw the path through the
-      // settled node positions for a crisp match with the nodes.
-      const maxDelay = 500 + JOURNEY_PHASES.length * 60;
-      setTimeout(() => {
-        drawJourneyPath();
-      }, maxDelay + 200);
+      // "Active station" glow while scrolling the journey
+      const inviewObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('journey__phase--inview');
+            } else {
+              entry.target.classList.remove('journey__phase--inview');
+            }
+          });
+        },
+        { threshold: 0.4 }
+      );
+      $$('.journey__phase', track).forEach((phase) => inviewObserver.observe(phase));
     } else {
       // Fallback: show all
       $$('.journey__phase', track).forEach((phase) => {
         phase.style.opacity = '1';
-        phase.style.transform = 'translateX(0)';
+        phase.style.transform = 'translate(0, 0)';
+        phase.setAttribute('data-revealed', 'true');
       });
+      drawJourneyPath();
     }
 
-    // Draw the winding path through the node centers
+    // Draw the winding road through the node centers
     drawJourneyPath();
   }
 
   // ============================================
-  // JOURNEY — winding path (SVG)
-  // Builds a smooth S-curved path that weaves
-  // through the node centers, alternating left
-  // and right of the centre axis.
+  // JOURNEY — winding road (SVG)
+  // Draws a smooth road with a dashed centre line and
+  // animated draw-on, weaving through alternating stations.
   // ============================================
   function drawJourneyPath() {
     const track = $('.journey__track');
     if (!track) return;
 
-    // Remove existing dynamic path
+    // Remove an existing dynamic path
     const existing = track.querySelector('.journey__path--dynamic');
     if (existing) existing.remove();
 
@@ -234,20 +247,20 @@
       };
     });
 
-    const margin = isMobile() ? 16 : 60;
+    const braiding = isMobile() ? 0.12 : 0.42;
     const pts = points.map((p, i) => {
-      // Alternate the curve sag to the left/right for a wavy road
-      const x = isMobile() ? Math.max(16, Math.min(trackRect.width - 16, p.x)) : p.x;
+      // Alternate the road sag to the left/right for a smooth S-curve.
+      const x = isMobile() ? Math.max(12, Math.min(trackRect.width - 12, p.x)) : p.x;
       return { ...p, x };
     });
 
-    // Build a smooth cubic bezier path through points
+    // Build a smooth clamped-cubic path through the alternating stations.
     let d = `M ${pts[0].x} ${pts[0].y}`;
     for (let i = 0; i < pts.length - 1; i++) {
       const p0 = pts[i];
       const p1 = pts[i + 1];
       const dir = i % 2 === 0 ? 1 : -1;
-      const ctrl = margin * 1.2;
+      const ctrl = (p1.y - p0.y) * braiding;
       d += ` C ${p0.x + ctrl * dir} ${p0.y + (p1.y - p0.y) * 0.3}, ${p1.x + ctrl * dir * -1} ${p1.y - (p1.y - p0.y) * 0.3}, ${p1.x} ${p1.y}`;
     }
 
@@ -259,18 +272,13 @@
     pathWrap.style.width = trackRect.width + 'px';
     pathWrap.style.height = trackRect.height + 'px';
 
-    const path = document.createElementNS(NS, 'path');
-    path.setAttribute('d', d);
-    path.setAttribute('class', 'journey__path-line');
-
-    // Colour the whole path with a gradient approximating the phase colours
+    // Phase-colour vertical gradient for the centre line
     const gradient = document.createElementNS(NS, 'linearGradient');
     gradient.setAttribute('id', 'journeyGradient');
     gradient.setAttribute('x1', '0%');
     gradient.setAttribute('y1', '0%');
     gradient.setAttribute('x2', '0%');
     gradient.setAttribute('y2', '100%');
-
     const stops = [
       { off: '0%', color: '#3B82F6' },
       { off: '12%', color: '#8B5CF6' },
@@ -288,16 +296,39 @@
       stop.setAttribute('stop-color', s.color);
       gradient.appendChild(stop);
     });
-
     pathWrap.appendChild(gradient);
-    path.setAttribute('stroke', `url(#journeyGradient)`);
-    pathWrap.appendChild(path);
+
+    // Road base (soft surface)
+    const edge = document.createElementNS(NS, 'path');
+    edge.setAttribute('d', d);
+    edge.setAttribute('class', 'journey__road-edge');
+
+    const base = document.createElementNS(NS, 'path');
+    base.setAttribute('d', d);
+    base.setAttribute('class', 'journey__road-base');
+
+    const center = document.createElementNS(NS, 'path');
+    center.setAttribute('d', d);
+    center.setAttribute('class', 'journey__road-center');
+    center.setAttribute('stroke', `url(#journeyGradient)`);
+
+    pathWrap.appendChild(edge);
+    pathWrap.appendChild(base);
+    pathWrap.appendChild(center);
     track.appendChild(pathWrap);
 
-    // Animate dashes flowing along the path (desktop only, respect reduced motion)
-    if (!prefersReducedMotion && !isMobile()) {
-      track.classList.add('journey__track--animated');
-    }
+    // Draw-on animation: set the path length, then animate offset -> 0.
+    requestAnimationFrame(() => {
+      const len = center.getTotalLength();
+      if (len) {
+        document.documentElement.style.setProperty('--path-length', String(Math.ceil(len)));
+        track.classList.add('journey__track--drawn');
+        // After drawing, start the gentle flowing dash motion (desktop only).
+        if (!isMobile()) {
+          setTimeout(() => track.classList.add('journey__track--animated'), 1700);
+        }
+      }
+    });
   }
 
   function isMobile() {
@@ -305,6 +336,10 @@
   }
 
   function onResize() {
+    const track = $('.journey__track');
+    if (track) {
+      track.classList.remove('journey__track--drawn', 'journey__track--animated');
+    }
     drawJourneyPath();
   }
 

@@ -36,7 +36,7 @@
   margin: 0 auto;
 }
 
-/* Winding path (SVG) drawn behind the nodes */
+/* Winding road (SVG) drawn behind the nodes */
 .journey__path {
   position: absolute;
   top: 0;
@@ -44,28 +44,57 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 0;
   overflow: visible;
 }
 
-.journey__path-line {
+/* Road base (a soft wide stroke = the road surface) */
+.journey__road-base {
   fill: none;
-  stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  opacity: 0.55;
+  stroke-width: 34;
+  stroke: rgba(148, 163, 184, 0.14);
 }
 
-/* Animated dashes flowing along the path */
+/* Road centre line (dashed, phase-coloured gradient) */
+.journey__road-center {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  stroke-dasharray: 10 14;
+}
+
+/* Subtle road edges */
+.journey__road-edge {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1;
+  stroke: rgba(100, 116, 139, 0.25);
+}
+
+/* Draw-on: the centre line first draws itself as a solid stroke,
+   then settles into its dashed rhythm once fully drawn. */
+@keyframes journey-draw {
+  from { stroke-dasharray: var(--path-length, 2400); stroke-dashoffset: var(--path-length, 2400); }
+  to   { stroke-dasharray: 10 14; stroke-dashoffset: 0; }
+}
+
+.journey__track--drawn .journey__road-center {
+  animation: journey-draw 1.4s var(--ease-out) forwards;
+}
+
+/* Gentle flowing dashes once the road is drawn */
 @keyframes journey-flow {
   from { stroke-dashoffset: 24; }
   to   { stroke-dashoffset: 0; }
 }
 
-.journey__track--animated .journey__path-line {
-  animation: journey-flow 1.2s linear infinite;
+.journey__track--animated .journey__road-center {
+  animation: journey-draw 1.4s var(--ease-out) forwards,
+             journey-flow 1.2s linear infinite 1.6s;
 }
 
 /* ---- Phase node ---- */
@@ -73,7 +102,7 @@
   position: relative;
   display: flex;
   align-items: flex-start;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
   cursor: pointer;
 }
 
@@ -81,22 +110,35 @@
   margin-bottom: 0;
 }
 
-/* Alternating layout */
-.journey__phase--left {
+/* Alternating station placement along the winding road:
+   left stations sit on the left bend, right stations on the right bend.
+   Cards are centred on the opposite side so the road weaves between them. */
+.journey__phase {
   flex-direction: row;
-  padding-right: calc(50% + 40px);
+  align-items: center;
+}
+
+.journey__phase--left {
+  justify-content: flex-end;
+}
+
+.journey__phase--left .journey__node {
+  left: 22%;
 }
 
 .journey__phase--right {
-  flex-direction: row-reverse;
-  padding-left: calc(50% + 40px);
+  justify-content: flex-start;
 }
 
-/* ---- Node circle (on the line) ---- */
+.journey__phase--right .journey__node {
+  left: 78%;
+}
+
+/* ---- Node circle (on the winding road) ---- */
 .journey__node {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  top: 50%;
   width: 56px;
   height: 56px;
   border-radius: var(--radius-full);
@@ -110,12 +152,21 @@
   transition: all var(--duration-normal) var(--ease-out);
   cursor: pointer;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .journey__phase:hover .journey__node,
+.journey__phase--inview .journey__node {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+/* Active station glow while scrolling through the journey */
+.journey__phase--inview .journey__node {
+  box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.12), 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
 .journey__phase--active .journey__node {
-  transform: translateX(-50%) scale(1.15);
-  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.1);
+  transform: translate(-50%, -50%) scale(1.15);
 }
 
 /* Phase-specific node colors */
@@ -141,18 +192,26 @@
 
 /* ---- Phase card ---- */
 .journey__card {
-  flex: 1;
+  width: calc(50% - 32px);
+  flex: none;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out);
   cursor: pointer;
 }
 
 .journey__card:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--color-border);
+  transform: translateY(-3px);
+}
+
+.journey__phase--inview .journey__card {
+  box-shadow: var(--shadow-lg);
 }
 
 .journey__phase--active .journey__card {
@@ -318,22 +377,26 @@
    ============================================ */
 
 @media (max-width: 768px) {
-  /* The path is drawn by JS through the node centres (left rail) */
-  .journey__phase--left,
-  .journey__phase--right {
-    flex-direction: row;
-    padding-left: 72px;
-    padding-right: 0;
+  /* Single-column timeline: road hugs the left rail, cards to the right */
+  .journey__phase {
+    justify-content: flex-start;
+  }
+
+  .journey__phase--left .journey__node,
+  .journey__phase--right .journey__node {
+    left: 46px;
   }
 
   .journey__node {
-    left: 28px;
     width: 44px;
     height: 44px;
     font-size: 1.1rem;
   }
 
   .journey__card {
+    width: auto;
+    flex: 1;
+    margin-left: 68px;
     padding: var(--space-4);
   }
 
