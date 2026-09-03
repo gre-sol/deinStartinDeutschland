@@ -164,7 +164,7 @@ const JOURNEY_PHASES = [
       { title: 'Vorübergehend ins Ausland', slug: 'voruebergehend-abwesend', available: false },
       { title: 'Dauerhaft auswandern', slug: 'dauerhaft-auswandern', available: false },
       { title: 'Wohnung & Verträge', slug: 'wohnung-vertraege-abreise', available: false },
-      { title: 'Sachen einlagern', slug: 'sachen-einlagern', available: false, serviceType: 'external' },
+      { title: 'Sachen einlagern', slug: 'sachen-einlagern', available: true },
       { title: 'Post & Dokumente', slug: 'post-dokumente-abreise', available: false },
       { title: 'Rückkehr nach Deutschland', slug: 'rueckkehr-deutschland', available: false },
     ],

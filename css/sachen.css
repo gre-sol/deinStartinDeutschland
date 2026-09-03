@@ -1,0 +1,626 @@
+/* ============================================
+   SACHSEN EINLAGERN PAGE
+   Premium editorial / SaaS layout.
+   Icons: files from Bilder/icons/ · Fotos: Bilder/bilder/.
+   ============================================ */
+
+/* ---- Icon & image sizing shims ----
+   Icons are <img> files the user drops into the Bilder/ folders.
+   These rules keep them crisp and correctly sized even if a
+   slot is (temporarily) missing a file. */
+.sachen-hero__label-icon,
+.sachen-list__icon,
+.sachen-card__icon img,
+.sachen-chip img,
+.sachen-back__icon {
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: none;
+}
+
+.sachen-hero__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.sachen-hero__media {
+  max-width: 720px;
+  margin: 0 auto var(--space-8);
+}
+
+/* Graceful fallback while an icon file is still missing */
+.sachen-list__item img,
+.sachen-card__icon img,
+.sachen-chip img,
+.sachen-hero__label img,
+.sachen-back__inner img {
+  opacity: 1;
+}
+
+/* ---- Shared section rhythm ---- */
+.sachen-section {
+  padding: var(--space-24) 0;
+}
+
+.sachen-section--alt {
+  background: var(--color-bg-alt);
+}
+
+.sachen-section__head {
+  max-width: 62ch;
+  margin-bottom: var(--space-12);
+}
+
+.sachen-section__head--center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.sachen-section__kicker {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: var(--space-3);
+}
+
+.sachen-section__title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+  text-wrap: balance;
+}
+
+.sachen-section__intro {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+
+.sachen-hero {
+  position: relative;
+  overflow: hidden;
+  padding: calc(var(--header-height) + var(--space-20)) 0 var(--space-20);
+}
+
+/* Soft brand glow behind the hero (pure CSS, no image) */
+.sachen-hero::before {
+  content: '';
+  position: absolute;
+  top: -140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 520px;
+  background:
+    radial-gradient(ellipse 60% 60% at 30% 40%, var(--color-primary-lighter) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 70% 60%, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle travelling-dot route accent (pure CSS shape) */
+.sachen-hero::after {
+  content: '';
+  position: absolute;
+  right: -120px;
+  top: 120px;
+  width: 320px;
+  height: 320px;
+  border: 1px dashed rgba(37, 99, 235, 0.25);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sachen-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 64ch;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sachen-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-10);
+}
+
+.sachen-breadcrumb a {
+  color: var(--color-text-secondary);
+  transition: color var(--duration-fast) var(--ease-in-out);
+}
+
+.sachen-breadcrumb a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.sachen-hero__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.sachen-hero__title {
+  font-size: clamp(2.25rem, 5.5vw, 4rem);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  margin-bottom: var(--space-6);
+  text-wrap: balance;
+}
+
+.sachen-hero__title-accent {
+  color: var(--color-primary);
+}
+
+.sachen-hero__subtitle {
+  max-width: 56ch;
+  margin: 0 auto var(--space-8);
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.sachen-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.sachen-hero__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+/* ============================================
+   1. WANN LOHNT SICH EINLAGERUNG?
+   ============================================ */
+
+.sachen-list--grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.sachen-list__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-in-out);
+}
+
+.sachen-list__item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-primary-lighter);
+}
+
+/* ============================================
+   2. WELCHE MÖGLICHKEITEN GIBT ES?
+   ============================================ */
+
+.sachen-wege {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+}
+
+.sachen-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-in-out);
+}
+
+.sachen-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-in-out);
+}
+
+.sachen-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: transparent;
+}
+
+.sachen-card:hover::before {
+  opacity: 1;
+}
+
+.sachen-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-surface);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+  transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.sachen-card:hover .sachen-card__icon {
+  transform: scale(1.08);
+}
+
+.sachen-card__title {
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+  text-wrap: balance;
+}
+
+.sachen-card__text {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-6);
+}
+
+.sachen-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.sachen-card__list li {
+  position: relative;
+  padding-left: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.sachen-card__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+}
+
+/* ============================================
+   3. WAS KANN MAN EINLAGERN?
+   ============================================ */
+
+.sachen-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
+.sachen-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-in-out);
+}
+
+.sachen-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-primary-lighter);
+}
+
+.sachen-chip--more {
+  background: var(--color-primary-surface);
+  border-color: var(--color-primary-lighter);
+  color: var(--color-primary);
+}
+
+.sachen-note {
+  max-width: 60ch;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-primary-surface);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+/* ============================================
+   4. EINLAGERN STATT WOHNUNG BEHALTEN
+   ============================================ */
+
+.sachen-compare {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.sachen-compare__item {
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-3xl);
+}
+
+.sachen-compare__item--highlight {
+  background: var(--color-primary-surface);
+  border-color: var(--color-primary-lighter);
+}
+
+.sachen-compare__label {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+}
+
+.sachen-compare__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sachen-compare__list li {
+  position: relative;
+  padding-left: var(--space-6);
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.sachen-compare__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+.sachen-compare__item--highlight .sachen-compare__list li::before {
+  background: var(--color-primary);
+}
+
+/* ============================================
+   5. PARTNERANGEBOT: SAVESPACE
+   ============================================ */
+
+.sachen-partner {
+  padding: 0 0 var(--space-24);
+}
+
+.sachen-partner__card {
+  position: relative;
+  overflow: hidden;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-12);
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-primary-surface) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Clean geometric accents (pure CSS) */
+.sachen-partner__card::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.sachen-partner__label {
+  margin-bottom: var(--space-6);
+}
+
+.badge--partner {
+  background: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+}
+
+.sachen-partner__title {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+  text-wrap: balance;
+}
+
+.sachen-partner__text {
+  max-width: 52ch;
+  margin: 0 auto var(--space-8);
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.btn--lg {
+  padding: var(--space-4) var(--space-10);
+  font-size: var(--text-base);
+}
+
+.sachen-partner__disclosure {
+  margin: var(--space-8) auto 0;
+  max-width: 46ch;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  line-height: var(--leading-relaxed);
+}
+
+/* ============================================
+   BÄCK-ZUR-JOURNEY (interner Link)
+   ============================================ */
+
+.sachen-back {
+  padding-bottom: var(--space-24);
+}
+
+.sachen-back__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+}
+
+.sachen-back__icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.sachen-back__kicker {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-1);
+}
+
+.sachen-back__link {
+  display: inline-block;
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-primary);
+}
+
+.sachen-back__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .sachen-section {
+    padding: var(--space-16) 0;
+  }
+
+  .sachen-hero {
+    padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-16);
+  }
+
+  .sachen-hero::after {
+    right: -180px;
+    top: 80px;
+    width: 240px;
+    height: 240px;
+  }
+
+  .sachen-list--grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sachen-wege {
+    grid-template-columns: 1fr;
+  }
+
+  .sachen-compare {
+    grid-template-columns: 1fr;
+  }
+
+  .sachen-card,
+  .sachen-compare__item {
+    padding: var(--space-6);
+  }
+
+  .sachen-partner__card {
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .sachen-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sachen-hero__actions .btn {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sachen-card,
+  .sachen-compare__item {
+    padding: var(--space-6);
+  }
+}

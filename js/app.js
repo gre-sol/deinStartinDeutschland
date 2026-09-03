@@ -122,7 +122,7 @@
                         </span>
                        </a>`
                     : item.available
-                    ? `<a href="/${item.slug}" class="journey__item journey__item--available">
+                    ? `<a href="${item.slug}.html" class="journey__item journey__item--available">
                         <span aria-hidden="true">→</span>
                         <span>${item.title}</span>
                         <span class="journey__item-arrow" aria-hidden="true">→</span>

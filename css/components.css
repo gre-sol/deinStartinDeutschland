@@ -269,6 +269,23 @@ body.nav-open {
   color: rgba(255, 255, 255, 0.35);
 }
 
+/* Responsive footer */
+@media (max-width: 768px) {
+  .footer__inner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8) var(--space-6);
+  }
+  .footer__brand {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+  .footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+}
+
 /* ============================================
    BADGE
    ============================================ */

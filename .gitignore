@@ -19,3 +19,6 @@ Desktop.ini
 
 # Screenshots
 *.png
+
+# But site images inside Bilder/ are real content
+!Bilder/**/*.png
