@@ -300,13 +300,11 @@ const SERVICE_CATEGORIES = [
 
 const NAV_LINKS = [
   { label: 'Startseite', href: 'index.html', id: 'home' },
-  { label: 'Services', href: 'services.html', id: 'services' },
 ];
 
 const FOOTER_LINKS = {
   navigation: [
     { label: 'Startseite', href: 'index.html' },
-    { label: 'Services', href: 'services.html' },
   ],
   legal: [
     { label: 'Impressum', href: 'impressum.html', available: false },
