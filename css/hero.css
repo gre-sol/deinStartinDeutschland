@@ -62,8 +62,6 @@
   max-height: 560px;
   object-fit: cover;
   object-position: center;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
 }
 
 .hero__badge {
