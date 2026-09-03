@@ -152,6 +152,9 @@
         const isActive = phaseEl.classList.toggle('journey__phase--active');
         card.setAttribute('aria-expanded', String(isActive));
         items.setAttribute('aria-hidden', String(!isActive));
+        // The card grows/shrinks over the CSS max-height transition; let
+        // the road re-measure and "grow" with it (path follows the nodes).
+        syncRoad();
       }
 
       card.addEventListener('click', togglePhase);
@@ -227,119 +230,153 @@
 
   // ============================================
   // JOURNEY — winding road (SVG)
-  // Draws a smooth road with a dashed centre line and an animated
-  // draw-on. The road weaves through the central corridor between the
-  // two card columns, so it is always visible and never hidden behind
-  // an opaque card. Nodes sit on the road at each card's inner edge.
+  // The road is measured against the LIVE geometry of the station
+  // dots. A ResizeObserver watches the track, so whenever a card is
+  // expanded/collapsed (or the viewport changes) the path is rebuilt to
+  // follow the nodes in real time — the route "grows" with the cards and
+  // never sits under a card or its expanded text.
   // ============================================
-  function drawJourneyPath() {
-    const track = $('.journey__track');
-    if (!track) return;
+  const NS = 'http://www.w3.org/2000/svg';
 
-    // Remove any existing dynamic path
-    const existing = track.querySelector('.journey__path--dynamic');
-    if (existing) existing.remove();
-
-    const nodes = $$('.journey__node', track);
-    if (nodes.length < 2) return;
-
-    // Node centers relative to the track (measured at their resting
-    // position — never during a reveal transform).
+  // Measure each station's centre relative to the track. The node scale
+  // used on hover/inview keeps the visual centre fixed, so this reports
+  // the resting position the road should pass through.
+  function measureNodes(track) {
     const trackRect = track.getBoundingClientRect();
-    const points = nodes.map((node) => {
+    return $$('.journey__node', track).map((node) => {
       const r = node.getBoundingClientRect();
+      const x = r.left - trackRect.left + r.width / 2;
+      const y = r.top - trackRect.top + r.height / 2;
       return {
-        x: r.left - trackRect.left + r.width / 2,
-        y: r.top - trackRect.top + r.height / 2,
+        x: isMobile() ? Math.max(18, Math.min(trackRect.width - 18, x)) : x,
+        y,
       };
     });
+  }
 
-    // Smooth clamped-cubic path through the alternating stations.
-    // A Catmull-Rom-style tangent keeps the road curving gently inside
-    // the corridor and away from the card columns.
-    const pts = points.map((p) => ({
-      x: isMobile() ? Math.max(18, Math.min(trackRect.width - 18, p.x)) : p.x,
-      y: p.y,
-    }));
-
+  // Build the smooth clamped-cubic path through the stations. Each pair
+  // of consecutive nodes forms exactly one cubic segment, so the shape
+  // of the "d" is stable no matter how the cards grow.
+  function buildRoadD(pts) {
+    if (!pts.length) return 'M 0 0';
     let d = `M ${pts[0].x} ${pts[0].y}`;
     for (let i = 0; i < pts.length - 1; i++) {
       const p0 = pts[i];
       const p1 = pts[i + 1];
       // Tangent magnitude ~ 1/3 of the vertical distance for a natural S.
       const k = Math.abs(p1.y - p0.y) * 0.33;
-      // Control points pull toward the same side as each station, so the
-      // road bows toward the inward edge and returns through the gap.
-      const c0x = p0.x;
-      const c1x = p1.x;
-      d += ` C ${c0x} ${p0.y + k}, ${c1x} ${p1.y - k}, ${p1.x} ${p1.y}`;
+      d += ` C ${p0.x} ${p0.y + k}, ${p1.x} ${p1.y - k}, ${p1.x} ${p1.y}`;
     }
+    return d;
+  }
 
-    const NS = 'http://www.w3.org/2000/svg';
-    const pathWrap = document.createElementNS(NS, 'svg');
-    pathWrap.setAttribute('class', 'journey__path journey__path--dynamic');
-    pathWrap.setAttribute('viewBox', `0 0 ${trackRect.width} ${trackRect.height}`);
-    pathWrap.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    pathWrap.style.width = trackRect.width + 'px';
-    pathWrap.style.height = trackRect.height + 'px';
+  // Apply a freshly-measured path to the (existing) dynamic svg.
+  // This is used both for the initial render and for live re-measures,
+  // so the road always matches the current card geometry.
+  function applyRoad(svg, track, pts) {
+    const tr = track.getBoundingClientRect();
+    const d = buildRoadD(pts);
+    svg.setAttribute('viewBox', `0 0 ${tr.width} ${tr.height}`);
+    svg.style.width = tr.width + 'px';
+    svg.style.height = tr.height + 'px';
+    $$('.journey__road-edge, .journey__road-base, .journey__road-center', svg).forEach((p) => {
+      p.setAttribute('d', d);
+    });
+    return d;
+  }
 
-    // Phase-colour vertical gradient for the centre line
+  // Create (once) the svg with the gradient plus the three road strokes.
+  function ensureRoad(track) {
+    let svg = track.querySelector('.journey__path--dynamic');
+    if (svg) return svg;
+    svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'journey__path journey__path--dynamic');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
     const gradient = document.createElementNS(NS, 'linearGradient');
     gradient.setAttribute('id', 'journeyGradient');
     gradient.setAttribute('x1', '0%');
     gradient.setAttribute('y1', '0%');
     gradient.setAttribute('x2', '0%');
     gradient.setAttribute('y2', '100%');
-    const stops = [
-      { off: '0%', color: '#3B82F6' },
-      { off: '12%', color: '#8B5CF6' },
-      { off: '25%', color: '#06B6D4' },
-      { off: '37%', color: '#10B981' },
-      { off: '50%', color: '#F59E0B' },
-      { off: '62%', color: '#EF4444' },
-      { off: '75%', color: '#EC4899' },
-      { off: '87%', color: '#6366F1' },
-      { off: '100%', color: '#475569' },
-    ];
-    stops.forEach((s) => {
+    ([
+      ['0%', '#3B82F6'],
+      ['12%', '#8B5CF6'],
+      ['25%', '#06B6D4'],
+      ['37%', '#10B981'],
+      ['50%', '#F59E0B'],
+      ['62%', '#EF4444'],
+      ['75%', '#EC4899'],
+      ['87%', '#6366F1'],
+      ['100%', '#475569'],
+    ]).forEach(([off, color]) => {
       const stop = document.createElementNS(NS, 'stop');
-      stop.setAttribute('offset', s.off);
-      stop.setAttribute('stop-color', s.color);
+      stop.setAttribute('offset', off);
+      stop.setAttribute('stop-color', color);
       gradient.appendChild(stop);
     });
-    pathWrap.appendChild(gradient);
+    svg.appendChild(gradient);
 
-    // Road base (soft surface)
     const edge = document.createElementNS(NS, 'path');
-    edge.setAttribute('d', d);
     edge.setAttribute('class', 'journey__road-edge');
-
     const base = document.createElementNS(NS, 'path');
-    base.setAttribute('d', d);
     base.setAttribute('class', 'journey__road-base');
-
     const center = document.createElementNS(NS, 'path');
-    center.setAttribute('d', d);
     center.setAttribute('class', 'journey__road-center');
-    center.setAttribute('stroke', `url(#journeyGradient)`);
+    center.setAttribute('stroke', 'url(#journeyGradient)');
 
-    pathWrap.appendChild(edge);
-    pathWrap.appendChild(base);
-    pathWrap.appendChild(center);
-    track.appendChild(pathWrap);
+    svg.appendChild(edge);
+    svg.appendChild(base);
+    svg.appendChild(center);
+    track.appendChild(svg);
+    return svg;
+  }
 
-    // Draw-on animation: set the path length, then animate offset -> 0.
-    requestAnimationFrame(() => {
-      const len = center.getTotalLength();
-      if (len) {
-        document.documentElement.style.setProperty('--path-length', String(Math.ceil(len)));
-        track.classList.add('journey__track--drawn');
-        // After drawing, start the gentle flowing dash motion (desktop only).
-        if (!isMobile()) {
-          setTimeout(() => track.classList.add('journey__track--animated'), 1700);
-        }
+  // Initial draw: ensure the svg, apply the first path, trigger the
+  // draw-on / flow animations.
+  function drawJourneyPath() {
+    const track = $('.journey__track');
+    if (!track) return;
+    const svg = ensureRoad(track);
+    const pts = measureNodes(track);
+    applyRoad(svg, track, pts);
+    const center = $('.journey__road-center', svg);
+    const len = center.getTotalLength();
+    if (len) {
+      document.documentElement.style.setProperty('--path-length', String(Math.ceil(len)));
+      track.classList.add('journey__track--drawn');
+      if (!isMobile()) {
+        setTimeout(() => track.classList.add('journey__track--animated'), 1700);
       }
-    });
+    }
+  }
+
+  // Live syncing: coalesced rAF loop that re-measures the nodes and
+  // re-applies the path so it stays glued to the cards while they
+  // expand/collapse (and on any layout change). Stops once two frames
+  // produce identical geometry, and restarts on demand.
+  let roadLoopRunning = false;
+  function syncRoad() {
+    if (roadLoopRunning) return;
+    const track = $('.journey__track');
+    const svg = track && track.querySelector('.journey__path--dynamic');
+    if (!track || !svg) return;
+    roadLoopRunning = true;
+    let lastSig = '';
+    const step = () => {
+      if (!roadLoopRunning) return;
+      const pts = measureNodes(track);
+      const sig = pts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('|');
+      if (sig === lastSig) {
+        // Settled — stop chasing (a final apply already happened).
+        roadLoopRunning = false;
+        return;
+      }
+      lastSig = sig;
+      applyRoad(svg, track, pts);
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   }
 
   function isMobile() {
@@ -348,9 +385,8 @@
 
   function onResize() {
     const track = $('.journey__track');
-    if (track) {
-      track.classList.remove('journey__track--drawn', 'journey__track--animated');
-    }
+    if (!track) return;
+    track.classList.remove('journey__track--drawn', 'journey__track--animated');
     drawJourneyPath();
   }
 
@@ -466,7 +502,21 @@
     renderServices();
     initSmoothScroll();
 
-    // Redraw the path on resize (debounced)
+    // Robust responsiveness: watch the track itself. Any layout change —
+    // expanded cards, viewport resize, font/wrap differences, etc. — is
+    // caught here and the road is re-measured + re-applied to follow the
+    // moving station dots. No fixed pixel assumptions.
+    const track = $('.journey__track');
+    if (track && 'ResizeObserver' in window) {
+      const resizeObserver = new ResizeObserver(() => {
+        // Fires continuously during the card max-height transition.
+        syncRoad();
+      });
+      resizeObserver.observe(track);
+    }
+
+    // Redraw the path on window resize (kept as a debounced fallback for
+    // the draw-on animation reset when crossing viewport breakpoints).
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
