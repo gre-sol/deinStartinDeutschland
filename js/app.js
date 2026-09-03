@@ -119,7 +119,7 @@
                           <span aria-hidden="true">→</span>
                           <span>${item.title}</span>
                           <span class="journey__item-badge">
-                            <span class="badge badge--gre">${gre.label}</span>
+                            <span class="badge badge--gre"><img src="Bilder/icons/gre-logo.png" alt="German Relo Experts (GRE)" class="badge__gre-icon"></span>
                           </span>
                         </a>`;
                     }
