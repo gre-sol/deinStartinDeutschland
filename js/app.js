@@ -118,9 +118,7 @@
                         <a href="${gre.href}" class="journey__item journey__item--available journey__item--gre" target="_blank" rel="noopener">
                           <span aria-hidden="true">→</span>
                           <span>${item.title}</span>
-                          <span class="journey__item-badge">
-                            <span class="badge badge--gre"><img src="Bilder/icons/gre-logo.png" alt="German Relo Experts (GRE)" class="badge__gre-icon"></span>
-                          </span>
+                          <img src="Bilder/icons/gre-logo.png" alt="" class="journey__item-gre-icon" aria-hidden="true">
                         </a>`;
                     }
                     if (item.available && item.serviceType === 'external') {

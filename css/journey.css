@@ -398,6 +398,13 @@
   margin-left: auto;
 }
 
+.journey__item-gre-icon {
+  height: 18px;
+  width: auto;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 /* ============================================
    MOBILE JOURNEY
    ============================================ */
