@@ -47,17 +47,11 @@
   flex-shrink: 0;
 }
 
-.header__logo-icon {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--text-lg);
-  color: white;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+.header__logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
 }
 
 .header__nav {
@@ -269,8 +263,14 @@ body.nav-open {
   color: rgba(255, 255, 255, 0.35);
 }
 
-/* Responsive footer */
+/* Responsive header + footer */
 @media (max-width: 768px) {
+  .header__nav {
+    display: none;
+  }
+  .hamburger {
+    display: flex;
+  }
   .footer__inner {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-8) var(--space-6);

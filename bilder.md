@@ -21,9 +21,22 @@ Diese Datei dokumentiert **alle** Bilder und Icons, die die Unterseite
 
 ```
 Bilder/
-├── icons/      # Icons (SVG oder transparentes PNG, 1:1)
-└── bilder/     # Fotos / größere Bilder
+├── icons/      # Icons (SVG oder transparentes PNG, 1:1) für den Seiten-Inhalt
+├── bilder/     # Fotos / größere Bilder
+├── logo.png    # Website-Logo (Header + Favicon) – nutze exakt diesen Namen
+└── PLATZIERHALTER.md
 ```
+
+---
+
+## Website-Logo (Header + Favicon)
+
+- **Datei:** `Bilder/logo.png`
+- **Verwendung:** im Header aller Seiten und als Browser-Favicon.
+- **Beschreibung:** transparentes PNG des Firmen-/Website-Logos. Solange die Datei fehlt,
+  erscheint im Header nur der Text „Dein Start in Deutschland".
+- **Format:** PNG, transparent, hohe Auflösung (mind. 64px Höhe für den Header, für das
+  Favicon idealerweise quadratisch 64×64 oder größer).
 
 ---
 

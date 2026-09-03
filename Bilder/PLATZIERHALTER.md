@@ -36,6 +36,11 @@ bleibt trotzdem stabil. Erwartete Dateien (vom HTML referenziert):
 | ------------------ | --------------------------------------- |
 | `sachen-hero.png`  | Hero-Visual (bereits vorhanden)         |
 
+## Website-Logo (Header + Favicon)
+Leg dein Logo als **`Bilder/logo.png`** ab (transparentes PNG). Es wird automatisch
+im Header und als Favicon aller Seiten verwendet. Solange die Datei fehlt, erscheint
+in der Kopfzeile nur der Text „Dein Start in Deutschland".
+
 ## Stand
 - Die Icons in `Bilder/icons/` sind derzeit **neutrale Platzhalter** (SVG), damit die
   Seite sauber rendert. Ersetze sie durch deine echten Icons (gleicher Dateiname verwenden).
