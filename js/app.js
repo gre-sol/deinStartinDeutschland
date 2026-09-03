@@ -131,6 +131,14 @@
                           </span>
                         </a>`;
                     }
+                    if (item.available && item.slug === 'sachen-einlagern') {
+                      return `
+                        <a href="${item.slug}.html" class="journey__item journey__item--available">
+                          <span aria-hidden="true">→</span>
+                          <span>${item.title}</span>
+                          <img src="Bilder/icons/dsid-logo.png" alt="" class="journey__item-gre-icon" aria-hidden="true">
+                        </a>`;
+                    }
                     if (item.available) {
                       return `
                         <a href="${item.slug}.html" class="journey__item journey__item--available">
