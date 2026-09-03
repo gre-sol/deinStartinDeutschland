@@ -298,6 +298,21 @@ const SERVICE_CATEGORIES = [
   },
 ];
 
+/* ---- GRE Service links (central config) ---- */
+const GRE_SERVICE_LINK = 'https://german-relo-experts.de/services';
+
+const GRE_SERVICES = {
+  'wohnung-finden':       { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'mietvertrag-verstehen': { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'gez-rundfunkbeitrag':  { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'anmeldung-buergeramt': { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'bankkonto':            { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'krankenversicherung':  { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'fuehrerschein':        { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'deutsch-lernen':       { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'rundfunkbeitrag':      { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+};
+
 const NAV_LINKS = [
   { label: 'Startseite', href: 'index.html', id: 'home' },
 ];

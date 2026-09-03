@@ -111,30 +111,45 @@
             <div class="journey__items-inner">
               ${phase.items
                 .map(
-                  (item) => `
-                ${
-                  item.available && item.serviceType === 'external'
-                    ? `<a href="#" class="journey__item journey__item--available journey__item--external" data-service-slug="${item.slug}">
-                        <span aria-hidden="true">→</span>
-                        <span>${item.title}</span>
-                        <span class="journey__item-badge">
-                          <span class="badge badge--external">Externer Service</span>
-                        </span>
-                       </a>`
-                    : item.available
-                    ? `<a href="${item.slug}.html" class="journey__item journey__item--available">
-                        <span aria-hidden="true">→</span>
-                        <span>${item.title}</span>
-                        <span class="journey__item-arrow" aria-hidden="true">→</span>
-                       </a>`
-                    : `<div class="journey__item journey__item--coming-soon">
+                  (item) => {
+                    const gre = GRE_SERVICES[item.slug];
+                    if (gre) {
+                      return `
+                        <a href="${gre.href}" class="journey__item journey__item--available journey__item--gre" target="_blank" rel="noopener">
+                          <span aria-hidden="true">→</span>
+                          <span>${item.title}</span>
+                          <span class="journey__item-badge">
+                            <span class="badge badge--gre">${gre.label}</span>
+                          </span>
+                        </a>`;
+                    }
+                    if (item.available && item.serviceType === 'external') {
+                      return `
+                        <a href="#" class="journey__item journey__item--available journey__item--external" data-service-slug="${item.slug}">
+                          <span aria-hidden="true">→</span>
+                          <span>${item.title}</span>
+                          <span class="journey__item-badge">
+                            <span class="badge badge--external">Externer Service</span>
+                          </span>
+                        </a>`;
+                    }
+                    if (item.available) {
+                      return `
+                        <a href="${item.slug}.html" class="journey__item journey__item--available">
+                          <span aria-hidden="true">→</span>
+                          <span>${item.title}</span>
+                          <span class="journey__item-arrow" aria-hidden="true">→</span>
+                        </a>`;
+                    }
+                    return `
+                      <div class="journey__item journey__item--coming-soon">
                         <span aria-hidden="true">·</span>
                         <span>${item.title}</span>
                         <span class="journey__item-badge">
                           <span class="badge badge--coming-soon">Demnächst</span>
                         </span>
-                       </div>`
-                }`
+                      </div>`;
+                  }
                 )
                 .join('')}
             </div>
