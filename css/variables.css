@@ -139,7 +139,7 @@
   --container-lg: 1024px;
   --container-xl: 1200px;
   --container-2xl: 1400px;
-  --header-height: 72px;
+  --header-height: 90px;
 
   /* ---- Z-Index ---- */
   --z-dropdown: 100;
