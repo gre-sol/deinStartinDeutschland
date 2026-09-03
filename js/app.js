@@ -163,11 +163,12 @@
       });
 
       // Entrance / scroll-reveal state: cards & nodes appear one after another
+      // (kept subtle: small offset, gentle ease-out — per design guidance).
       if (!prefersReducedMotion) {
         phaseEl.setAttribute('data-revealed', 'false');
         phaseEl.style.opacity = '0';
-        phaseEl.style.transform = isMobile() ? 'translateY(24px)' : (isLeft ? 'translateX(-24px)' : 'translateX(24px)');
-        phaseEl.style.transition = `opacity 550ms cubic-bezier(0.16, 1, 0.3, 1), transform 550ms cubic-bezier(0.16, 1, 0.3, 1)`;
+        phaseEl.style.transform = 'translateY(0)';
+        phaseEl.style.transition = 'opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1)';
       }
     });
 
@@ -178,22 +179,26 @@
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const ph = entry.target;
-              const delay = $$('.journey__phase[data-revealed="false"]', track).indexOf(ph) * 90;
+              // Stagger a little as each station enters, but never so long
+              // that the journey feels sluggish.
+              const pending = $$('.journey__phase[data-revealed="false"]', track);
+              const delay = pending.indexOf(ph) * 40;
               setTimeout(() => {
                 ph.style.opacity = '1';
-                ph.style.transform = 'translate(0, 0)';
+                ph.style.transform = 'translateY(0)';
                 ph.setAttribute('data-revealed', 'true');
-              }, delay);
+              }, Math.min(delay, 300));
               revealObserver.unobserve(ph);
             }
           });
         },
-        { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+        { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
       );
 
       $$('.journey__phase', track).forEach((phase) => revealObserver.observe(phase));
 
-      // "Active station" glow while scrolling the journey
+      // "Active station" subtle highlight while scrolling the journey.
+      // Uses the default viewport trigger so the current station glows.
       const inviewObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -204,7 +209,7 @@
             }
           });
         },
-        { threshold: 0.4 }
+        { threshold: 0.35 }
       );
       $$('.journey__phase', track).forEach((phase) => inviewObserver.observe(phase));
     } else {
@@ -214,7 +219,6 @@
         phase.style.transform = 'translate(0, 0)';
         phase.setAttribute('data-revealed', 'true');
       });
-      drawJourneyPath();
     }
 
     // Draw the winding road through the node centers
@@ -223,21 +227,24 @@
 
   // ============================================
   // JOURNEY — winding road (SVG)
-  // Draws a smooth road with a dashed centre line and
-  // animated draw-on, weaving through alternating stations.
+  // Draws a smooth road with a dashed centre line and an animated
+  // draw-on. The road weaves through the central corridor between the
+  // two card columns, so it is always visible and never hidden behind
+  // an opaque card. Nodes sit on the road at each card's inner edge.
   // ============================================
   function drawJourneyPath() {
     const track = $('.journey__track');
     if (!track) return;
 
-    // Remove an existing dynamic path
+    // Remove any existing dynamic path
     const existing = track.querySelector('.journey__path--dynamic');
     if (existing) existing.remove();
 
     const nodes = $$('.journey__node', track);
     if (nodes.length < 2) return;
 
-    // Node centers relative to the track
+    // Node centers relative to the track (measured at their resting
+    // position — never during a reveal transform).
     const trackRect = track.getBoundingClientRect();
     const points = nodes.map((node) => {
       const r = node.getBoundingClientRect();
@@ -247,28 +254,32 @@
       };
     });
 
-    const braiding = isMobile() ? 0.12 : 0.42;
-    const pts = points.map((p, i) => {
-      // Alternate the road sag to the left/right for a smooth S-curve.
-      const x = isMobile() ? Math.max(12, Math.min(trackRect.width - 12, p.x)) : p.x;
-      return { ...p, x };
-    });
+    // Smooth clamped-cubic path through the alternating stations.
+    // A Catmull-Rom-style tangent keeps the road curving gently inside
+    // the corridor and away from the card columns.
+    const pts = points.map((p) => ({
+      x: isMobile() ? Math.max(18, Math.min(trackRect.width - 18, p.x)) : p.x,
+      y: p.y,
+    }));
 
-    // Build a smooth clamped-cubic path through the alternating stations.
     let d = `M ${pts[0].x} ${pts[0].y}`;
     for (let i = 0; i < pts.length - 1; i++) {
       const p0 = pts[i];
       const p1 = pts[i + 1];
-      const dir = i % 2 === 0 ? 1 : -1;
-      const ctrl = (p1.y - p0.y) * braiding;
-      d += ` C ${p0.x + ctrl * dir} ${p0.y + (p1.y - p0.y) * 0.3}, ${p1.x + ctrl * dir * -1} ${p1.y - (p1.y - p0.y) * 0.3}, ${p1.x} ${p1.y}`;
+      // Tangent magnitude ~ 1/3 of the vertical distance for a natural S.
+      const k = Math.abs(p1.y - p0.y) * 0.33;
+      // Control points pull toward the same side as each station, so the
+      // road bows toward the inward edge and returns through the gap.
+      const c0x = p0.x;
+      const c1x = p1.x;
+      d += ` C ${c0x} ${p0.y + k}, ${c1x} ${p1.y - k}, ${p1.x} ${p1.y}`;
     }
 
     const NS = 'http://www.w3.org/2000/svg';
     const pathWrap = document.createElementNS(NS, 'svg');
     pathWrap.setAttribute('class', 'journey__path journey__path--dynamic');
     pathWrap.setAttribute('viewBox', `0 0 ${trackRect.width} ${trackRect.height}`);
-    pathWrap.setAttribute('preserveAspectRatio', 'none');
+    pathWrap.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     pathWrap.style.width = trackRect.width + 'px';
     pathWrap.style.height = trackRect.height + 'px';
 

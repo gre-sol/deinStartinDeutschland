@@ -1,3 +1,6 @@
+# Local AI-tooling
+.opencode/
+
 # Playwright artifacts
 .playwright-mcp/
 

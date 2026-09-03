@@ -27,16 +27,24 @@
 .journey__heading {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   color: var(--color-text);
+  text-wrap: balance;
+  max-inline-size: 22ch;
+  margin-inline: auto;
 }
 
-/* ---- Desktop: winding road / S-curve layout ---- */
+/* ---- Desktop: winding road / S-curve layout ----
+   Cards are pinned to the outer edges of the track,
+   leaving a clear central corridor. The road weaves
+   through that corridor and its station dots sit at
+   the inner edge of each card, so the route is always
+   visible and is never hidden behind an opaque card. */
 .journey__track {
   position: relative;
   max-width: 900px;
   margin: 0 auto;
 }
 
-/* Winding road (SVG) drawn behind the nodes */
+/* Winding road (SVG) drawn behind the nodes but kept in the corridor */
 .journey__path {
   position: absolute;
   top: 0;
@@ -48,16 +56,16 @@
   overflow: visible;
 }
 
-/* Road base (a soft wide stroke = the road surface) */
+/* Road base: a soft, wide stroke that reads as the road surface */
 .journey__road-base {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 34;
-  stroke: rgba(148, 163, 184, 0.14);
+  stroke-width: 30;
+  stroke: rgba(148, 163, 184, 0.16);
 }
 
-/* Road centre line (dashed, phase-coloured gradient) */
+/* Road centre line: dashed, phase-coloured gradient */
 .journey__road-center {
   fill: none;
   stroke-linecap: round;
@@ -66,43 +74,43 @@
   stroke-dasharray: 10 14;
 }
 
-/* Subtle road edges */
+/* Subtle road edges (a fine outline, like a painted lane edge) */
 .journey__road-edge {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1;
-  stroke: rgba(100, 116, 139, 0.25);
+  stroke: rgba(100, 116, 139, 0.28);
 }
 
-/* Draw-on: the centre line first draws itself as a solid stroke,
-   then settles into its dashed rhythm once fully drawn. */
+/* Draw-on: centre line first behaves like a solid stroke that
+   unwinds, then settles into its dashed rhythm once complete. */
 @keyframes journey-draw {
   from { stroke-dasharray: var(--path-length, 2400); stroke-dashoffset: var(--path-length, 2400); }
   to   { stroke-dasharray: 10 14; stroke-dashoffset: 0; }
 }
 
 .journey__track--drawn .journey__road-center {
-  animation: journey-draw 1.4s var(--ease-out) forwards;
+  animation: journey-draw 1.5s var(--ease-out) forwards;
 }
 
-/* Gentle flowing dashes once the road is drawn */
+/* Gentle, slow flow of the dashes once the road is drawn */
 @keyframes journey-flow {
   from { stroke-dashoffset: 24; }
   to   { stroke-dashoffset: 0; }
 }
 
 .journey__track--animated .journey__road-center {
-  animation: journey-draw 1.4s var(--ease-out) forwards,
-             journey-flow 1.2s linear infinite 1.6s;
+  animation: journey-draw 1.5s var(--ease-out) forwards,
+             journey-flow 3.5s linear infinite 1.9s;
 }
 
 /* ---- Phase node ---- */
 .journey__phase {
   position: relative;
   display: flex;
-  align-items: flex-start;
-  margin-bottom: var(--space-5);
+  align-items: center;
+  margin-bottom: var(--space-16);
   cursor: pointer;
 }
 
@@ -110,20 +118,15 @@
   margin-bottom: 0;
 }
 
-/* Alternating station placement along the winding road:
-   left stations sit on the left bend, right stations on the right bend.
-   Cards are centred on the opposite side so the road weaves between them. */
-.journey__phase {
-  flex-direction: row;
-  align-items: center;
-}
-
+/* Alternating station placement.
+   The node sits at the INNER edge of its card, right on the road,
+   so the road passes cleanly between the two card columns. */
 .journey__phase--left {
   justify-content: flex-end;
 }
 
 .journey__phase--left .journey__node {
-  left: 22%;
+  left: 42%;
 }
 
 .journey__phase--right {
@@ -131,10 +134,10 @@
 }
 
 .journey__phase--right .journey__node {
-  left: 78%;
+  left: 58%;
 }
 
-/* ---- Node circle (on the winding road) ---- */
+/* ---- Node circle (station dot on the road) ---- */
 .journey__node {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -149,27 +152,30 @@
   justify-content: center;
   font-size: 1.4rem;
   z-index: 2;
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              background-color var(--duration-normal) var(--ease-out);
   cursor: pointer;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-card);
 }
 
-.journey__phase:hover .journey__node,
-.journey__phase--inview .journey__node {
-  transform: translate(-50%, -50%) scale(1.12);
+/* Subtle lift on hover of the row */
+.journey__phase:hover .journey__node {
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
-/* Active station glow while scrolling through the journey */
+/* Active station (while scrolling): a soft phase-coloured glow */
 .journey__phase--inview .journey__node {
-  box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.12), 0 4px 14px rgba(0, 0, 0, 0.1);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .journey__phase--active .journey__node {
-  transform: translate(-50%, -50%) scale(1.15);
+  transform: translate(-50%, -50%) scale(1.12);
 }
 
-/* Phase-specific node colors */
+/* Phase-specific node ring colours carried via a currentColor ring */
 .journey__phase[data-phase="ankommen"] .journey__node { border-color: var(--phase-ankommen); }
 .journey__phase[data-phase="wohnen"] .journey__node { border-color: var(--phase-wohnen); }
 .journey__phase[data-phase="aufenthalt"] .journey__node { border-color: var(--phase-aufenthalt); }
@@ -180,6 +186,27 @@
 .journey__phase[data-phase="alltag"] .journey__node { border-color: var(--phase-alltag); }
 .journey__phase[data-phase="verlassen"] .journey__node { border-color: var(--phase-verlassen); }
 
+/* In-view (scrolling) glow: a soft phase-coloured halo on the dot */
+.journey__phase--inview[data-phase="ankommen"] .journey__node,
+.journey__phase--active[data-phase="ankommen"] .journey__node { box-shadow: 0 0 0 8px rgba(59,130,246,0.14); }
+.journey__phase--inview[data-phase="wohnen"] .journey__node,
+.journey__phase--active[data-phase="wohnen"] .journey__node { box-shadow: 0 0 0 8px rgba(139,92,246,0.14); }
+.journey__phase--inview[data-phase="aufenthalt"] .journey__node,
+.journey__phase--active[data-phase="aufenthalt"] .journey__node { box-shadow: 0 0 0 8px rgba(6,182,212,0.14); }
+.journey__phase--inview[data-phase="finanzen"] .journey__node,
+.journey__phase--active[data-phase="finanzen"] .journey__node { box-shadow: 0 0 0 8px rgba(16,185,129,0.14); }
+.journey__phase--inview[data-phase="mobilitaet"] .journey__node,
+.journey__phase--active[data-phase="mobilitaet"] .journey__node { box-shadow: 0 0 0 8px rgba(245,158,11,0.14); }
+.journey__phase--inview[data-phase="versicherungen"] .journey__node,
+.journey__phase--active[data-phase="versicherungen"] .journey__node { box-shadow: 0 0 0 8px rgba(239,68,68,0.14); }
+.journey__phase--inview[data-phase="integration"] .journey__node,
+.journey__phase--active[data-phase="integration"] .journey__node { box-shadow: 0 0 0 8px rgba(236,72,153,0.14); }
+.journey__phase--inview[data-phase="alltag"] .journey__node,
+.journey__phase--active[data-phase="alltag"] .journey__node { box-shadow: 0 0 0 8px rgba(99,102,241,0.14); }
+.journey__phase--inview[data-phase="verlassen"] .journey__node,
+.journey__phase--active[data-phase="verlassen"] .journey__node { box-shadow: 0 0 0 8px rgba(71,85,105,0.14); }
+
+/* Active (expanded) fills the node with its phase colour */
 .journey__phase--active[data-phase="ankommen"] .journey__node { background: var(--phase-ankommen-bg); }
 .journey__phase--active[data-phase="wohnen"] .journey__node { background: var(--phase-wohnen-bg); }
 .journey__phase--active[data-phase="aufenthalt"] .journey__node { background: var(--phase-aufenthalt-bg); }
@@ -192,7 +219,8 @@
 
 /* ---- Phase card ---- */
 .journey__card {
-  width: calc(50% - 32px);
+  width: calc(50% - 96px);
+  max-width: 400px;
   flex: none;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -210,16 +238,14 @@
   transform: translateY(-3px);
 }
 
-.journey__phase--inview .journey__card {
-  box-shadow: var(--shadow-lg);
-}
-
+.journey__phase--inview .journey__card,
 .journey__phase--active .journey__card {
   box-shadow: var(--shadow-lg);
 }
 
+/* Phase accent on hover / active */
 .journey__phase[data-phase="ankommen"] .journey__card:hover,
-.journey__phase[data-phase="ankommen"].journey__phase--active .journey__card { border-color: var(--phase-ankkommen-border); }
+.journey__phase[data-phase="ankommen"].journey__phase--active .journey__card { border-color: var(--phase-ankommen-border); }
 .journey__phase[data-phase="wohnen"] .journey__card:hover,
 .journey__phase[data-phase="wohnen"].journey__phase--active .journey__card { border-color: var(--phase-wohnen-border); }
 .journey__phase[data-phase="aufenthalt"] .journey__card:hover,
@@ -377,9 +403,11 @@
    ============================================ */
 
 @media (max-width: 768px) {
-  /* Single-column timeline: road hugs the left rail, cards to the right */
+  /* Single-column timeline: road runs along the left rail,
+     cards sit to the right. The road is fully visible. */
   .journey__phase {
     justify-content: flex-start;
+    margin-bottom: var(--space-5);
   }
 
   .journey__phase--left .journey__node,
@@ -395,6 +423,7 @@
 
   .journey__card {
     width: auto;
+    max-width: none;
     flex: 1;
     margin-left: 68px;
     padding: var(--space-4);
@@ -408,8 +437,14 @@
     font-size: var(--text-sm);
     display: none;
   }
+}
 
-  .journey__phase {
-    margin-bottom: var(--space-3);
+/* ---- Reduced motion ----
+   Non-essential motion (draw-on, flow, reveal offsets) is dropped;
+   content simply appears in its final state. */
+@media (prefers-reduced-motion: reduce) {
+  .journey__track--drawn .journey__road-center,
+  .journey__track--animated .journey__road-center {
+    animation: none;
   }
 }
