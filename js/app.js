@@ -11,6 +11,47 @@
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Minimal escaping for data-driven values used inside template HTML.
+  const esc = (value) =>
+    String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  // Resolve a journey theme's provider ids → provider objects.
+  function getProvidersForSlug(slug) {
+    if (typeof PROVIDERS === 'undefined' || typeof JOURNEY_PROVIDERS === 'undefined') return [];
+    return (JOURNEY_PROVIDERS[slug] || [])
+      .map((id) => PROVIDERS.find((p) => p.id === id))
+      .filter(Boolean);
+  }
+
+  // Build a single provider chip (small clickable card: logo + short name).
+  // Brand names stay real, crawlable text – the logo is decorative next to it.
+  function providerChip(provider, themeTitle) {
+    const isAffiliate = provider.type === 'affiliate';
+    const rel = isAffiliate ? 'noopener noreferrer sponsored' : 'noopener noreferrer';
+    const nameShort = provider.shortName || provider.name;
+    const aria = isAffiliate
+      ? `${provider.name} – Anbieter für „${themeTitle}“ (Affiliate-Link)`
+      : `${provider.name} – Anbieter für „${themeTitle}“`;
+    const logo = provider.logo
+      ? `<img src="${esc(provider.logo)}" alt="" class="provider-chip__logo" aria-hidden="true">`
+      : '';
+
+    return `
+      <a href="${esc(provider.url)}"
+         class="provider-chip provider-chip--${isAffiliate ? 'affiliate' : 'service'}"
+         target="_blank" rel="${rel}"
+         aria-label="${esc(aria)}" title="${esc(provider.name)}">
+        ${logo}
+        <span class="provider-chip__name">${esc(nameShort)}</span>
+        <span class="sr-only">${esc(provider.name)}</span>
+        ${isAffiliate ? '<span class="provider-chip__flag">Affiliate</span>' : ''}
+      </a>`;
+  }
+
   // ============================================
   // HEADER — scroll effect
   // ============================================
@@ -110,53 +151,31 @@
           <div class="journey__items" aria-hidden="true">
             <div class="journey__items-inner">
               ${phase.items
-                .map(
-                  (item) => {
-                    const gre = GRE_SERVICES[item.slug];
-                    if (gre) {
-                      return `
-                        <a href="${gre.href}" class="journey__item journey__item--available journey__item--gre" target="_blank" rel="noopener">
-                          <span aria-hidden="true">→</span>
-                          <span>${item.title}</span>
-                          <img src="Bilder/icons/gre-logo.png" alt="" class="journey__item-gre-icon" aria-hidden="true">
-                        </a>`;
-                    }
-                    if (item.available && item.serviceType === 'external') {
-                      return `
-                        <a href="#" class="journey__item journey__item--available journey__item--external" data-service-slug="${item.slug}">
-                          <span aria-hidden="true">→</span>
-                          <span>${item.title}</span>
-                          <span class="journey__item-badge">
-                            <span class="badge badge--external">Externer Service</span>
-                          </span>
-                        </a>`;
-                    }
-                    if (item.available && item.slug === 'sachen-einlagern') {
-                      return `
-                        <a href="${item.slug}.html" class="journey__item journey__item--available">
-                          <span aria-hidden="true">→</span>
-                          <span>${item.title}</span>
-                          <img src="Bilder/icons/dsid-logo.png" alt="" class="journey__item-gre-icon" aria-hidden="true">
-                        </a>`;
-                    }
-                    if (item.available) {
-                      return `
-                        <a href="${item.slug}.html" class="journey__item journey__item--available">
-                          <span aria-hidden="true">→</span>
-                          <span>${item.title}</span>
-                          <span class="journey__item-arrow" aria-hidden="true">→</span>
-                        </a>`;
-                    }
+                .map((item) => {
+                  const providers = getProvidersForSlug(item.slug);
+                  const titleMarkup = item.available
+                    ? `<a href="${esc(item.slug)}.html" class="journey__item-title journey__item-title--link">${esc(item.title)}</a>`
+                    : `<span class="journey__item-title">${esc(item.title)}</span>`;
+
+                  // Theme with assigned provider(s): title left, chips right.
+                  if (providers.length) {
                     return `
-                      <div class="journey__item journey__item--coming-soon">
-                        <span aria-hidden="true">·</span>
-                        <span>${item.title}</span>
-                        <span class="journey__item-badge">
-                          <span class="badge badge--coming-soon">Demnächst</span>
-                        </span>
+                      <div class="journey__item journey__item--available">
+                        ${titleMarkup}
+                        <div class="journey__providers">
+                          ${providers.map((p) => providerChip(p, item.title)).join('')}
+                        </div>
                       </div>`;
                   }
-                )
+                  // No provider assigned yet → "Demnächst" placeholder.
+                  return `
+                    <div class="journey__item journey__item--coming-soon">
+                      ${titleMarkup}
+                      <span class="provider-chip provider-chip--empty">
+                        <span class="provider-chip__name">Demnächst</span>
+                      </span>
+                    </div>`;
+                })
                 .join('')}
             </div>
           </div>
@@ -173,10 +192,16 @@
         const isActive = phaseEl.classList.toggle('journey__phase--active');
         card.setAttribute('aria-expanded', String(isActive));
         items.setAttribute('aria-hidden', String(!isActive));
+        // Keep collapsed chips out of focus order and out of the a11y tree
+        // until the phase is opened (progressive disclosure).
+        items.inert = !isActive;
         // The card grows/shrinks over the CSS max-height transition; let
         // the road re-measure and "grow" with it (path follows the nodes).
         syncRoad();
       }
+
+      // Initially collapsed → non-interactive.
+      items.inert = true;
 
       card.addEventListener('click', togglePhase);
       card.addEventListener('keydown', (e) => {

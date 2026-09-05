@@ -334,7 +334,9 @@
 }
 
 .journey__phase--active .journey__items {
-  max-height: 500px;
+  /* Generous ceiling so phases with up to 9 themes (incl. stacked provider
+     chips on mobile) never clip. The visible content stays compact. */
+  max-height: 1600px;
   opacity: 1;
   margin-top: var(--space-4);
 }
@@ -347,62 +349,157 @@
   gap: var(--space-1);
 }
 
+/* ---- Journey item: theme left, provider chips right ---- */
 .journey__item {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-3);
+  column-gap: var(--space-4);
+  row-gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  transition: all var(--duration-fast) var(--ease-in-out);
-  text-decoration: none;
-  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-in-out);
 }
 
 .journey__item:hover {
   background: var(--color-bg-alt);
-  color: var(--color-text);
-}
-
-.journey__item--available {
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-.journey__item--available:hover {
-  background: var(--color-primary-surface);
-  color: var(--color-primary);
 }
 
 .journey__item--coming-soon {
   cursor: default;
-  opacity: 0.6;
+  opacity: 0.65;
 }
 
-.journey__item-arrow {
+.journey__item--coming-soon:hover {
+  background: transparent;
+}
+
+.journey__item-title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.journey__item--coming-soon .journey__item-title {
+  color: var(--color-text-tertiary);
+}
+
+.journey__item-title--link {
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.journey__item-title--link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ---- Provider chips ---- */
+.journey__providers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
   margin-left: auto;
+  min-width: 0;
+}
+
+.provider-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-in-out),
+              background-color var(--duration-fast) var(--ease-in-out),
+              box-shadow var(--duration-fast) var(--ease-in-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.provider-chip:hover {
+  border-color: var(--color-text-tertiary);
+  background: var(--color-surface-hover);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.provider-chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.provider-chip__logo {
+  height: 22px;
+  width: auto;
+  max-width: 110px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.provider-chip__name {
+  color: var(--color-text-secondary);
+}
+
+.provider-chip--service .provider-chip__name {
+  color: var(--color-text);
+}
+
+/* Affiliate mark – clear, but kept unobtrusive */
+.provider-chip__flag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 0 var(--space-2);
+  font-size: 0.625rem;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-full);
+}
+
+/* Non-interactive "Demnächst" placeholder (status text, not a link) */
+.provider-chip--empty {
+  border-style: dashed;
+  border-color: var(--color-border);
+  color: var(--color-text-tertiary);
+  cursor: default;
+}
+
+.provider-chip--empty:hover,
+.provider-chip--empty:focus-visible {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  box-shadow: none;
+  transform: none;
+  outline: none;
+}
+
+.provider-chip--empty .provider-chip__name {
+  color: var(--color-text-tertiary);
+}
+
+/* ---- Journey disclosure ---- */
+.journey__disclosure {
+  margin-top: var(--space-8);
   font-size: var(--text-xs);
   color: var(--color-text-tertiary);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: all var(--duration-fast) var(--ease-out);
-}
-
-.journey__item--available:hover .journey__item-arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.journey__item-badge {
-  margin-left: auto;
-}
-
-.journey__item-gre-icon {
-  height: 18px;
-  width: auto;
-  margin-left: auto;
-  flex-shrink: 0;
+  text-align: center;
+  max-width: 60ch;
+  margin-inline: auto;
 }
 
 /* ============================================
@@ -443,6 +540,23 @@
   .journey__card-desc {
     font-size: var(--text-sm);
     display: none;
+  }
+
+  /* Mobile: providers move below the theme in clean, wrapping rows */
+  .journey__item {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: var(--space-2);
+  }
+
+  .journey__providers {
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .provider-chip {
+    min-height: 44px;
+    padding: var(--space-1) var(--space-4);
   }
 }
 

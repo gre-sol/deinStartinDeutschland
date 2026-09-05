@@ -298,76 +298,105 @@ const SERVICE_CATEGORIES = [
   },
 ];
 
-/* ---- GRE Service links (central config) ---- */
-const GRE_SERVICE_LINK = 'https://g-reloexperts.com/';
+/* ---- Providers (central config) ----
+   Single source of truth for provider logos, names and links.
+   Journey themes only reference provider ids – the rendering in app.js
+   resolves them via PROVIDERS.
 
-const GRE_SERVICES = {
+   type:
+     'service'   – neutral service partner / recommendation
+     'affiliate' – partner offer with affiliate link (clearly marked,
+                   links use rel="sponsored")
+*/
+const PROVIDERS = [
+  {
+    id: 'gre',
+    name: 'German Relo Experts (GRE)',
+    shortName: 'GRE',
+    logo: 'Bilder/icons/gre-logo.png',
+    url: 'https://g-reloexperts.com/',
+    type: 'service',
+  },
+  {
+    id: 'savespace',
+    name: 'SaveSpace',
+    shortName: 'SaveSpace',
+    logo: '',
+    url: 'https://savespace.eu/?ref=O8KHZV',
+    type: 'affiliate',
+  },
+];
+
+/* Journey theme → provider ids. Themes without a provider entry render a
+   "Demnächst" placeholder chip instead of a provider chip. */
+const JOURNEY_PROVIDERS = {
   // Phase 01 – Ankommen
-  'unterkunft':                { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'sim-karte-internet':        { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'erste-orientierung':        { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'krankenversicherung-ankommen': { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'wichtige-dokumente-ankommen':  { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'notrufnummern':             { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'unterkunft': ['gre'],
+  'sim-karte-internet': ['gre'],
+  'erste-orientierung': ['gre'],
+  'krankenversicherung-ankommen': ['gre'],
+  'wichtige-dokumente-ankommen': ['gre'],
+  'notrufnummern': ['gre'],
   // Phase 02 – Wohnen & Anmeldung
-  'wohnung-finden':            { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'mietvertrag-verstehen':     { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'wohnungsgeberbestaetigung': { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'anmeldung-buergeramt':      { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'meldebescheinigung':        { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'gas-strom-wasser':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'internet-router':           { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'gez-rundfunkbeitrag':       { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'wohnung-finden': ['gre'],
+  'mietvertrag-verstehen': ['gre'],
+  'wohnungsgeberbestaetigung': ['gre'],
+  'anmeldung-buergeramt': ['gre'],
+  'meldebescheinigung': ['gre'],
+  'gas-strom-wasser': ['gre'],
+  'internet-router': ['gre'],
+  'gez-rundfunkbeitrag': ['gre'],
   // Phase 03 – Aufenthalt & Dokumente
-  'aufenthaltstitel':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'visum':                     { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'auslaenderbehoerde':        { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'arbeitserlaubnis':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'niederlassungserlaubnis':   { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'steuer-id':                 { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'wichtige-dokumente':        { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'aufenthaltstitel': ['gre'],
+  'visum': ['gre'],
+  'auslaenderbehoerde': ['gre'],
+  'arbeitserlaubnis': ['gre'],
+  'niederlassungserlaubnis': ['gre'],
+  'steuer-id': ['gre'],
+  'wichtige-dokumente': ['gre'],
   // Phase 04 – Finanzen
-  'bankkonto':                 { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'gehalt-verstehen':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'kindergeld':                { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'steuern':                   { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'sozialleistungen':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'ueberweisungen':            { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'laufende-kosten':           { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'bankkonto': ['gre'],
+  'gehalt-verstehen': ['gre'],
+  'kindergeld': ['gre'],
+  'steuern': ['gre'],
+  'sozialleistungen': ['gre'],
+  'ueberweisungen': ['gre'],
+  'laufende-kosten': ['gre'],
   // Phase 05 – Mobilität
-  'oepnv':                     { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'deutschlandticket':         { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'fuehrerschein':             { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'auto':                      { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'fahrrad':                   { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'oepnv': ['gre'],
+  'deutschlandticket': ['gre'],
+  'fuehrerschein': ['gre'],
+  'auto': ['gre'],
+  'fahrrad': ['gre'],
   // Phase 06 – Versicherungen
-  'krankenversicherung':       { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'privathaftpflicht':         { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'hausratversicherung':       { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'weitere-versicherungen':    { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'krankenversicherung': ['gre'],
+  'privathaftpflicht': ['gre'],
+  'hausratversicherung': ['gre'],
+  'weitere-versicherungen': ['gre'],
   // Phase 07 – Sprache & Integration
-  'deutsch-lernen':            { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'integrationskurs':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'beruf-arbeit':              { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'abschluesse-integration':   { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'schule-kita':               { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'kindergarten':              { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'studium-ausbildung':        { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'community':                 { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'freizeit':                  { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'deutsch-lernen': ['gre'],
+  'integrationskurs': ['gre'],
+  'beruf-arbeit': ['gre'],
+  'abschluesse-integration': ['gre'],
+  'schule-kita': ['gre'],
+  'kindergarten': ['gre'],
+  'studium-ausbildung': ['gre'],
+  'community': ['gre'],
+  'freizeit': ['gre'],
   // Phase 08 – Alltag & Digitale Services
-  'online-banking':            { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'behoerdenportale':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'wichtige-apps':             { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'internet-anbieter':         { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'rundfunkbeitrag':           { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'weitere-services':          { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  // Phase 09 – Deutschland verlassen (except sachen-einlagern – own page)
-  'voruebergehend-abwesend':   { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'dauerhaft-auswandern':      { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'wohnung-vertraege-abreise': { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'post-dokumente-abreise':    { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
-  'rueckkehr-deutschland':     { label: 'German Relo Experts (GRE)', href: GRE_SERVICE_LINK },
+  'online-banking': ['gre'],
+  'behoerdenportale': ['gre'],
+  'wichtige-apps': ['gre'],
+  'internet-anbieter': ['gre'],
+  'rundfunkbeitrag': ['gre'],
+  'weitere-services': ['gre'],
+  // Phase 09 – Deutschland verlassen
+  'voruebergehend-abwesend': ['gre'],
+  'dauerhaft-auswandern': ['gre'],
+  'wohnung-vertraege-abreise': ['gre'],
+  'sachen-einlagern': ['savespace'],
+  'post-dokumente-abreise': ['gre'],
+  'rueckkehr-deutschland': ['gre'],
 };
 
 const NAV_LINKS = [
