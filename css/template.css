@@ -1,0 +1,1394 @@
+/* ============================================================
+   MASTER TEMPLATE — Affiliate-/Partner-Service-Seiten
+   Dein Start in Deutschland
+
+   VISUAL LANGUAGE: "Modern Premium Editorial / Swiss-Tech"
+   ------------------------------------------------------------
+   - Luftige, editorial Typografie mit grosser Hierarchie
+   - Längere Zeilenabstände und leichtere Textgewichte
+   - Viel Weissraum zwischen Textblöcken und Sections
+   - Weniger Inhalte pro Fläche, bessere Lesbarkeit
+   - Geometrische, gerade Flächen (keine Pill-/stark runden Cards)
+   - Moderne asymmetrische Komposition, Diagonale & Cut-Kanten
+   - Dezente Schatten und feine Borders
+   - Blau/Violett als Akzent, kein übermässiger Verlauf
+
+   Komponenten (wiederverwendbar, 1 oder N Anbieter):
+     - tpl-hero          AffiliateHero  (2-Spalten, Text·Bild)
+     - tpl-intro         ServiceIntro (Kurz erklärt, 3 Schritte)
+     - offer-grid        OfferGrid (editorial comparison)
+     - offer             OfferSlab (Anbieter-Offer, geometrisch)
+     - tpl-benefit(s)    Benefits
+     - tpl-cta           CTASection (dunkler, viel Weissraum)
+     - tpl-disclosure    AffiliateDisclosure
+     - tpl-back / footer Interne Links
+   ============================================================ */
+
+/* Template-Seiten => eigene, schärfere Formsprache.
+   Scoped unter .tpl-page, damit Header/globaler Stil unberührt bleiben. */
+
+/* ============================================================
+   GRUNDELEMENTE / GEOMETRIE
+   ============================================================ */
+.tpl-page {
+  --tpl-ink: #0B1220;              /* fast-black, stärkster Text */
+  --tpl-ink-2: #111A2C;
+  --tpl-line: #E3E8F0;             /* feinere ruled line (mehr Ruhe) */
+  --tpl-line-strong: #0B1220;
+  --tpl-blue: #2563EB;             /* bestehende Hauptfarbe */
+  --tpl-blue-deep: #1E3A8A;
+  --tpl-violet: #8B5CF6;           /* Akzent (bestehendes Violett) */
+  --tpl-paper: #FFFFFF;
+  --tpl-mist: #F5F7FA;             /* neutrale Fläche */
+  --tpl-muted: #5B6573;
+  --tpl-radius: 0;                 /* gerade Kanten */
+  --tpl-radius-soft: 2px;
+  --tpl-cut: 20px;                 /* Diagonal-/Clip-Ecke */
+  --tpl-card-pad: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.tpl-page {
+  background: var(--tpl-paper);
+  color: var(--tpl-ink);
+  line-height: 1.7;                /* luftigere Grundlinie */
+  color-scheme: light;
+}
+
+/* Feine globale Hilfslinie */
+.tpl-rule {
+  display: block;
+  height: 1px;
+  border: 0;
+  background: var(--tpl-line);
+  margin: 0;
+}
+
+/* ============================================================
+   BUTTONS — eigene Formsprache (nur auf Template-Seiten)
+   Rechteckig/geometrisch, leicht abgeschrägte Diagonalecke,
+   integrierter Pfeil. Keine Pill-Buttons.
+   ============================================================ */
+.tpl-page .btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  height: 54px;
+  padding: 0 var(--space-7);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: 0;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+/* Primary: gefüllte Fläche, unten rechts abgeschnittene Diagonalecke */
+.tpl-page .btn--primary {
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+  border: none;
+  box-shadow: 0 18px 40px -28px rgba(11,18,32,0.7);
+}
+.tpl-page .btn--primary:hover {
+  background: var(--tpl-blue);
+  transform: translateY(-2px);
+}
+.tpl-page .btn--primary .btn__arrow,
+.tpl-page .btn--primary .tpl-btn__arrow {
+  margin-left: var(--space-2);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.tpl-page .btn--primary:hover .btn__arrow,
+.tpl-page .btn--primary:hover .tpl-btn__arrow {
+  transform: translateX(4px);
+}
+/* Feine Schein-Linie oben als Präzisionsdetail */
+.tpl-page .btn--primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.28);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+.tpl-page .btn--primary:hover::before {
+  transform: scaleX(0.2);
+  transform-origin: left;
+}
+
+/* Ghost/Sekundär: Rahmen, dezentere Breite, Eck-Winkel (crop-mark) */
+.tpl-page .btn--ghost {
+  background: transparent;
+  color: var(--tpl-ink);
+  border-color: var(--tpl-line-strong);
+  box-shadow: none;
+}
+.tpl-page .btn--ghost::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 11px;
+  height: 11px;
+  border-top: 2px solid var(--tpl-blue);
+  border-left: 2px solid var(--tpl-blue);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+.tpl-page .btn--ghost:hover {
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+  border-color: var(--tpl-ink);
+}
+.tpl-page .btn--ghost:hover::before {
+  opacity: 1;
+}
+.tpl-page .btn--ghost .btn__arrow {
+  color: var(--tpl-blue);
+  transition: transform var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.tpl-page .btn--ghost:hover .btn__arrow {
+  transform: translateX(4px);
+  color: #FFFFFF;
+}
+
+/* Disabled ("Angebot folgt") */
+.tpl-page .btn--disabled {
+  background: var(--tpl-mist);
+  color: var(--tpl-muted);
+  border: 1px solid var(--tpl-line);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+.tpl-page .btn--disabled::before {
+  display: none;
+}
+
+/* ============================================================
+   HERO — grosszügiges 2-Spalten-Layout
+   Text links, Bild rechts, viel Zeilenabstand.
+   ============================================================ */
+.tpl-hero {
+  position: relative;
+  overflow: hidden;
+  padding: calc(var(--header-height) + var(--space-20)) 0 var(--space-24);
+  background: var(--tpl-paper);
+}
+/* Ruhiger Hintergrund: keine grossen Grafiken, Fokus auf Text + Bild. */
+.tpl-hero__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(var(--space-10), 4vw, var(--space-14));
+  align-items: center;
+}
+
+.tpl-hero__content {
+  position: relative;
+  max-width: 54ch;
+}
+
+/* Breadcrumb */
+.tpl-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tpl-muted);
+  margin-bottom: var(--space-9);
+}
+.tpl-breadcrumb a {
+  color: var(--tpl-muted);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.tpl-breadcrumb a:hover {
+  color: var(--tpl-blue);
+}
+.tpl-breadcrumb [aria-current] {
+  color: var(--tpl-ink);
+}
+
+/* Label: schmale Klappe mit Zählmarke */
+.tpl-hero__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+  padding: var(--space-2) 0 var(--space-2) var(--space-5);
+  border-left: 3px solid var(--tpl-blue);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tpl-ink);
+}
+.tpl-hero__label-icon {
+  max-height: 16px;
+  width: auto;
+  color: var(--tpl-blue);
+}
+
+/* Title: grosse Display-Zeile mit viel Zeilenabstand */
+.tpl-hero__title {
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  line-height: 1.14;               /* grosszuegiger Zeilenabstand */
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.022em;
+  color: var(--tpl-ink);
+  margin-bottom: var(--space-9);
+  text-wrap: balance;
+}
+.tpl-hero__title-accent {
+  color: var(--tpl-blue);
+}
+
+.tpl-hero__subtitle {
+  max-width: 48ch;
+  font-size: clamp(1.0625rem, 2vw, 1.175rem);
+  color: var(--tpl-muted);
+  line-height: 1.7;
+  margin-bottom: var(--space-10);
+}
+
+.tpl-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-bottom: var(--space-10);
+}
+
+/* Meta: kompakte Zeile mit Trennzeichen */
+.tpl-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  font-size: var(--text-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--tpl-muted);
+}
+.tpl-hero__meta span:not([aria-hidden]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.tpl-hero__meta span:not([aria-hidden])::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--tpl-violet);
+}
+
+/* Media: grosses Bild mit feinem Rahmen – keine Card, keine Überlagerungen */
+.tpl-hero__media {
+  position: relative;
+  align-self: center;
+}
+.tpl-hero__media-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--tpl-mist);
+  border: 1px solid var(--tpl-line);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.tpl-hero__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* kein Bild → ruhiger geometrischer Fallback mit Icon */
+.tpl-hero__noimg {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: var(--tpl-ink-2);
+  color: #FFFFFF;
+  overflow: hidden;
+}
+.tpl-hero__noimg svg {
+  position: relative;
+  z-index: 1;
+  opacity: 0.9;
+}
+/* Tag: ruhige Bildunterschrift unter dem Rahmen, nie über dem Bild */
+.tpl-hero__tag {
+  position: absolute;
+  top: calc(100% + var(--space-4));
+  left: 1px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--tpl-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tpl-hero__tag::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--tpl-violet);
+}
+.tpl-hero__tag--blue { color: var(--tpl-blue); }
+.tpl-hero__tag--blue::before { background: var(--tpl-blue); }
+
+/* ============================================================
+   SECTIONS — viel Weissraum zwischen den Blöcken
+   ============================================================ */
+.tpl-section {
+  padding: var(--space-28) 0;
+}
+.tpl-section--first {
+  padding-top: var(--space-24);
+}
+.tpl-section--alt {
+  background: var(--tpl-mist);
+  border-top: 1px solid var(--tpl-line);
+  border-bottom: 1px solid var(--tpl-line);
+}
+.tpl-section--ink {
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+  border-top: 1px solid var(--tpl-ink-2);
+}
+
+.tpl-section__head {
+  max-width: 64ch;
+  margin-bottom: var(--space-16);
+  position: relative;
+}
+/* Kicker mit führender Line */
+.tpl-section__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tpl-blue);
+  margin-bottom: var(--space-6);
+}
+.tpl-section__kicker::before {
+  content: '';
+  width: 26px;
+  height: 2px;
+  background: var(--tpl-violet);
+}
+.tpl-section__title {
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  line-height: 1.16;
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.022em;
+  color: var(--tpl-ink);
+  margin-bottom: var(--space-6);
+  text-wrap: balance;
+}
+.tpl-section--ink .tpl-section__title { color: #FFFFFF; }
+.tpl-section__title .tpl-mark {
+  color: var(--tpl-blue);
+}
+.tpl-section--ink .tpl-section__title .tpl-mark { color: #A5B4FC; }
+
+.tpl-section__intro {
+  font-size: var(--text-lg);
+  color: var(--tpl-muted);
+  line-height: 1.75;
+  max-width: 56ch;
+}
+.tpl-section--ink .tpl-section__intro { color: #C7D2FE; }
+
+.tpl-section__head--center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tpl-section__head--center .tpl-section__kicker::before { display: none; }
+
+/* ============================================================
+   INTRO (Kurz erklärt) — 3 Schritte als verbundener Prozess.
+   Grosse, deutlich sichtbare Nummern 01/02/03, moderne Icons,
+   feine Verbindungslinie zwischen den Schritten. Viel Abstand,
+   luftige editoriale Liste, keine kleinen Boxen.
+   ============================================================ */
+.tpl-intro-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-16);
+}
+/* Feine Verbindungslinie durch die Schrittzahlen (hinter den
+   Nummern; diese maskieren die Linie mit Papier-Hintergrund). */
+.tpl-intro-grid::before {
+  content: '';
+  position: absolute;
+  top: 3.375rem;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: var(--tpl-line);
+  z-index: 0;
+  pointer-events: none;
+}
+.tpl-intro-card {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-8) 0 0;
+}
+/* Grosse Schrittzahl im Layoutfluss (oben links), maskiert die Linie. */
+.tpl-intro-card::before {
+  content: attr(data-index);
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--tpl-ink);
+  background: var(--tpl-paper);
+  padding: 0 var(--space-4) 0 0;
+  margin: 0 0 var(--space-4);
+}
+.tpl-intro-card__icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--space-6);
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+}
+.tpl-intro-card:nth-child(2) .tpl-intro-card__icon { background: var(--tpl-blue); }
+.tpl-intro-card:nth-child(3) .tpl-intro-card__icon { background: var(--tpl-violet); }
+.tpl-intro-card__title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+  color: var(--tpl-ink);
+  margin-bottom: var(--space-4);
+}
+.tpl-intro-card__text {
+  font-size: var(--text-base);
+  color: var(--tpl-muted);
+  line-height: 1.75;
+  margin: 0 0 var(--space-3);
+}
+.tpl-intro-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--tpl-line);
+  margin: 0;
+}
+.tpl-intro-card__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--tpl-ink);
+  line-height: 1.6;
+}
+.tpl-intro-card__list li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  margin-top: 7px;
+  background: var(--tpl-blue);
+}
+
+/* ============================================================
+   ANGEBOTE — OFFER-SLABS (editorial Premium-Vergleich)
+   Wichtigster Bereich. Geometrische Provider-Cards:
+   gerade Kanten, teilweise abgeschrägte Ecken (bevel), dezente
+   diagonale Elemente, grosse dezente Nummer im Hintergrund,
+   hochwertige visuelle Hierarchie.
+   ============================================================ */
+.tpl-offers__disclosure {
+  max-width: 64ch;
+  margin: 0 auto var(--space-14);
+  padding-left: var(--space-6);
+  border-left: 3px solid var(--tpl-line);
+  font-size: var(--text-sm);
+  color: var(--tpl-muted);
+  line-height: 1.7;
+}
+
+/* ---- Offer-Grid: ein System, eine saubere Rasterlogik ----
+   2 Anbieter → 2 Spalten, 3 Anbieter → 3 Spalten (Desktop),
+   4 Anbieter → 2×2. Karten werden stets auf gleiche Höhe gebracht. */
+.offer-grid {
+  display: grid;
+  gap: var(--space-8);
+  align-items: stretch;
+}
+.offer-grid--product {
+  grid-template-columns: 1fr;
+}
+.offer-grid--single {
+  grid-template-columns: 1fr;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+@media (min-width: 720px) {
+  .offer-grid--product { grid-template-columns: repeat(2, 1fr); gap: var(--space-8); }
+}
+@media (min-width: 1101px) {
+  .offer-grid--count-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================================
+   OFFER SLAB — geometrische Premium-Fläche
+   ============================================================ */
+.offer {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--tpl-paper);
+  padding: var(--tpl-card-pad);
+  overflow: hidden;
+  /* gerade Kanten mit dezenter abgeschrägter Ecke (bevel) unten rechts */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%);
+  border-top: 1px solid var(--tpl-line);
+  border-left: 1px solid var(--tpl-line);
+  box-shadow: 0 34px 80px -60px rgba(11,18,32,0.45);
+}
+
+/* Grosse dezente Nummer im Hintergrund */
+.offer__ghost {
+  position: absolute;
+  top: -14px;
+  right: -6px;
+  z-index: 0;
+  font-size: clamp(120px, 15vw, 180px);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--offer-ghost, rgba(11,18,32,0.05));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Dezentes diagonales Element (gedrehtes Quadrat) in Anbieterfarbe */
+.offer__shape {
+  position: absolute;
+  top: 46px;
+  right: 54px;
+  z-index: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--offer-accent, var(--tpl-blue));
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+/* Akzentfarben je Anbieter — ein System, eigene Signalfarbe */
+.offer--c24    { --offer-accent: #E23144; --offer-ghost: rgba(226,49,68,0.055); }
+.offer--n26    { --offer-accent: #111A2C; --offer-ghost: rgba(17,26,44,0.065); }
+.offer--revolut{ --offer-accent: #3A4047; --offer-ghost: rgba(58,64,71,0.055); }
+.offer--tfbank { --offer-accent: #14919B; --offer-ghost: rgba(20,145,155,0.055); }
+.offer--advanzia{ --offer-accent: #2D4F8F; --offer-ghost: rgba(45,79,143,0.055); }
+
+/* Kopfzeile: Index + dezentes Kleinstlabel */
+.offer__head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+.offer__index {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--offer-accent, var(--tpl-ink));
+}
+.offer__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.65625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tpl-muted);
+}
+.offer__tag-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  background: var(--offer-accent, var(--tpl-ink));
+}
+
+/* Body: eine Spalte, luftig. Produkt-/Servicebild liegt als
+   prominenter visueller Kopf der Karte über dem Text (order: -1). */
+.offer__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.offer__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.offer__visual { order: -1; }
+
+/* CTA ans untere Ende der (vereinheitlichten) Karte */
+.offer__action { margin-top: auto; }
+
+/* Logo prominent, frei stehend — keine Box */
+.offer__logo {
+  display: flex;
+  align-items: center;
+  min-height: 68px;
+  margin-bottom: var(--space-6);
+}
+.offer__logo-img {
+  display: block;
+  max-height: 68px;
+  max-width: 220px;
+  width: auto;
+  object-fit: contain;
+}
+.offer__logo-mark {
+  font-size: var(--text-4xl, 2.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--offer-accent, var(--tpl-ink));
+}
+
+/* Typografie-Hierarchie: Name gross → Desc luftig → Benefits kompakt */
+.offer__name {
+  margin: 0 0 var(--space-4);
+  font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--tpl-ink);
+  text-wrap: balance;
+}
+.offer__desc {
+  margin: 0 0 var(--space-7);
+  max-width: 54ch;
+  font-size: var(--text-base);
+  line-height: 1.7;
+  color: var(--tpl-muted);
+}
+
+/* Meta: Bonus/Preis als elegante geometrische Chips */
+.offer__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-7);
+}
+.offer__price {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 var(--space-4);
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 600;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%);
+}
+.offer__bonus {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 32px;
+  padding: 0 var(--space-4);
+  background: var(--offer-accent, var(--tpl-blue));
+  color: #FFFFFF;
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 600;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%);
+}
+.offer__bonus svg {
+  flex-shrink: 0;
+  color: rgba(255,255,255,0.85);
+}
+
+/* Benefits — eine Spalte, luftig, max. 3–5 Punkte */
+.offer__benefits {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: var(--space-4);
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+.offer__benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--tpl-ink);
+}
+.offer__check {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--offer-accent, var(--tpl-blue));
+}
+
+/* Action: CTA gehört direkt zur Offer-Information */
+.offer__action {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+.offer__cta {
+  height: 56px;
+  padding: 0 var(--space-7);
+  font-size: var(--text-base, 1rem);
+  font-weight: 700;
+}
+
+/* Details-Expander (dezent, inline) */
+.offer__details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--tpl-ink);
+  list-style: none;
+  white-space: nowrap;
+}
+.offer__details summary::-webkit-details-marker { display: none; }
+.offer__chev {
+  color: var(--offer-accent, var(--tpl-blue));
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.offer__details[open] .offer__chev { transform: rotate(180deg); }
+.offer__details-content {
+  margin-top: var(--space-4);
+  max-width: 480px;
+  padding: var(--space-5);
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+}
+.offer__details-content p { margin: 0; }
+
+/* Visuelle Fläche (Produkt-/Servicebild) — feiner geometrischer Rahmen */
+.offer__visual {
+  position: relative;
+  min-width: 0;
+}
+.offer__visual .offer__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 34px 70px -46px rgba(11,18,32,0.55);
+}
+.offer__visual .bank-card {
+  width: 100%;
+  max-width: 340px;
+  border-radius: 3px;
+  box-shadow: 0 40px 70px -40px rgba(11,18,32,0.55);
+}
+
+/* ============================================================
+   EINZELNER ANBIETER: grosse Premium-Offer-Section
+   ============================================================ */
+.offer-grid--single .offer {
+  padding: var(--space-10) var(--space-11) var(--space-11);
+}
+.offer-grid--single .offer__name {
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+}
+.offer-grid--single .offer__desc {
+  font-size: 1.0625rem;
+  max-width: 48ch;
+}
+/* Einzelner Anbieter mit Produktbild: Text links, Bild rechts. */
+.offer-grid--single .offer--visual .offer__body {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-areas: "content visual";
+  align-items: stretch;
+  gap: var(--space-12);
+}
+.offer-grid--single .offer--visual .offer__content { grid-area: content; }
+.offer-grid--single .offer--visual .offer__visual {
+  grid-area: visual;
+  order: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.offer-grid--single .offer__visual .bank-card {
+  max-width: 380px;
+}
+.offer-grid--single .offer__visual .offer__img {
+  max-width: 480px;
+}
+.offer-grid--single .offer__cta {
+  height: 60px;
+  font-size: 1.0625rem;
+}
+
+/* Breite 2-Spalten-Karten (2 oder 4 Anbieter): Text links, Produktbild
+   rechts – hält die Karten kompakt („nicht zu lang“). */
+.offer-grid--count-2 .offer--visual .offer__body,
+.offer-grid--count-4 .offer--visual .offer__body {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  grid-template-areas: "content visual";
+  align-items: start;
+  gap: var(--space-7);
+}
+.offer-grid--count-2 .offer--visual .offer__content,
+.offer-grid--count-4 .offer--visual .offer__content { grid-area: content; }
+.offer-grid--count-2 .offer--visual .offer__visual,
+.offer-grid--count-4 .offer--visual .offer__visual {
+  grid-area: visual;
+  order: 0;
+  align-self: start;
+  display: flex;
+  justify-content: center;
+}
+@media (max-width: 1100px) {
+  .offer-grid--count-2 .offer--visual .offer__body,
+  .offer-grid--count-4 .offer--visual .offer__body {
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+    gap: var(--space-7);
+  }
+  .offer-grid--count-2 .offer--visual .offer__content,
+  .offer-grid--count-4 .offer--visual .offer__content,
+  .offer-grid--count-2 .offer--visual .offer__visual,
+  .offer-grid--count-4 .offer--visual .offer__visual {
+    grid-area: auto;
+  }
+}
+
+/* ============================================================
+   BENEFITS (Warum dieses Angebot?) — luftig, asymmetrisch
+   ============================================================ */
+.tpl-benefits {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-12);
+}
+.tpl-benefit {
+  position: relative;
+  padding: var(--space-7) 0 0;
+  border-top: 1px solid var(--tpl-line);
+}
+.tpl-benefit:first-child { border-top-color: var(--tpl-ink); }
+.tpl-benefit__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--space-6);
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+}
+.tpl-benefit:nth-child(2) .tpl-benefit__icon { background: var(--tpl-blue); }
+.tpl-benefit:nth-child(3) .tpl-benefit__icon { background: var(--tpl-violet); }
+.tpl-benefit:nth-child(4) .tpl-benefit__icon { background: var(--tpl-ink-2); }
+.tpl-benefit__title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+  color: var(--tpl-ink);
+  margin-bottom: var(--space-3);
+}
+.tpl-benefit__text {
+  font-size: var(--text-sm);
+  color: var(--tpl-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ============================================================
+   CTA-BEREICH — dunkler, hochwertiger Abschluss,
+   geometrische Komposition mit viel Weissraum.
+   ============================================================ */
+.tpl-cta {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-28) 0;
+  background: var(--tpl-ink);
+  color: #FFFFFF;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), 0 100%);
+}
+.tpl-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 34%;
+  background: linear-gradient(135deg, transparent 0 90px, var(--tpl-blue) 90px 100%);
+  opacity: 0.35;
+  z-index: 0;
+}
+.tpl-cta__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 58ch;
+  padding: var(--space-8) 0;
+}
+.tpl-cta__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #A5B4FC;
+  margin-bottom: var(--space-6);
+}
+.tpl-cta__kicker::before {
+  content: '';
+  width: 26px;
+  height: 2px;
+  background: var(--tpl-violet);
+}
+.tpl-cta__title {
+  font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  line-height: 1.1;
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.022em;
+  color: #FFFFFF;
+  margin-bottom: var(--space-8);
+  text-wrap: balance;
+}
+.tpl-cta__text {
+  font-size: var(--text-lg);
+  color: #CBD5F5;
+  line-height: 1.75;
+  margin-bottom: var(--space-10);
+  max-width: 46ch;
+}
+.tpl-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+.tpl-cta .btn--ghost {
+  color: #FFFFFF;
+  border-color: rgba(255,255,255,0.5);
+}
+.tpl-cta .btn--ghost:hover {
+  background: #FFFFFF;
+  color: var(--tpl-ink);
+}
+.tpl-cta .btn--ghost:hover .btn__arrow { color: var(--tpl-ink); }
+.tpl-cta .btn--primary {
+  background: #FFFFFF;
+  color: var(--tpl-ink);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+  box-shadow: 0 26px 50px -30px rgba(0,0,0,0.8);
+}
+.tpl-cta .btn--primary::before { background: rgba(11,18,32,0.18); }
+.tpl-cta .btn--primary:hover { background: #E6EBF5; transform: translateY(-2px); }
+.tpl-cta .btn--primary .btn__arrow { color: var(--tpl-violet); }
+
+/* ------------------------------------------------------------
+   CTA MIT BILD — dunkle Premium-Komposition mit hochwertigem
+   Bild als visuellem Schwerpunkt rechts neben dem Text.
+   ------------------------------------------------------------ */
+.tpl-cta--withvisual::before { display: none; }
+.tpl-cta--withvisual .container {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(var(--space-12), 7vw, var(--space-28));
+  align-items: center;
+}
+.tpl-cta--withvisual .tpl-cta__inner {
+  max-width: none;
+  padding: var(--space-8) 0;
+}
+.tpl-cta__visual {
+  position: relative;
+  min-width: 0;
+}
+.tpl-cta__visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%);
+  filter: saturate(0.9) contrast(1.04);
+  box-shadow: 0 44px 90px -50px rgba(0,0,0,0.8);
+}
+/* violetter Diagonal-Streak an der Bildkante */
+.tpl-cta__visual::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 18px;
+  height: 18px;
+  background: var(--tpl-violet);
+  transform: rotate(45deg);
+}
+/* dezentes Info-Badge auf dem Bild */
+.tpl-cta__badge {
+  position: absolute;
+  bottom: var(--space-6);
+  left: var(--space-6);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(11,18,32,0.82);
+  border-left: 3px solid var(--tpl-blue);
+  color: #FFFFFF;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+@media (max-width: 1100px) {
+  .tpl-cta--withvisual .container {
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+  }
+  .tpl-cta__visual { max-width: 640px; }
+  .tpl-cta__visual img { aspect-ratio: 16 / 10; }
+}
+
+/* ============================================================
+   TRANSPARENZ / AFFILIATE-HINWEIS
+   ============================================================ */
+.tpl-disclosure {
+  max-width: 64ch;
+  margin: 0 auto;
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--tpl-line);
+  border-bottom: 1px solid var(--tpl-line);
+  font-size: var(--text-sm);
+  color: var(--tpl-muted);
+  line-height: 1.7;
+  text-align: left;
+}
+.tpl-disclosure strong {
+  color: var(--tpl-ink);
+}
+.tpl-disclosure__label {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tpl-blue);
+  margin-bottom: var(--space-2);
+}
+
+/* Disclosure in separatem Section-Block */
+.tpl-disclosure-section {
+  padding: var(--space-16) 0 var(--space-12);
+}
+
+/* ============================================================
+   FAQ — Accordion (ein Thema pro Zeile, gerade Kanten)
+   Offene Frage: Akkordeon klappt sanft auf, Zeichen wechselt.
+   Volle Tastatur-Bedienbarkeit über native Buttons.
+   ============================================================ */
+.tpl-faq {
+  max-width: 820px;
+  margin: 0 auto;
+}
+.tpl-faq__item {
+  border-top: 1px solid var(--tpl-line);
+}
+.tpl-faq__item:last-child {
+  border-bottom: 1px solid var(--tpl-line);
+}
+.tpl-faq__q-wrap {
+  margin: 0;
+}
+.tpl-faq__q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-7) 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  font-size: clamp(1.125rem, 2vw, 1.25rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  color: var(--tpl-ink);
+}
+.tpl-faq__q:hover { color: var(--tpl-blue); }
+.tpl-faq__q:focus-visible {
+  outline: 2px solid var(--tpl-blue);
+  outline-offset: 4px;
+}
+/* Plus-Zeichen: zwei Balken; bei geöffneter Frage um 45° gedreht → × */
+.tpl-faq__q-ico {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+.tpl-faq__q-ico::before,
+.tpl-faq__q-ico::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: var(--tpl-ink);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.tpl-faq__q-ico::before {
+  width: 16px;
+  height: 2px;
+  transform: translate(-50%, -50%);
+}
+.tpl-faq__q-ico::after {
+  width: 2px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+}
+.tpl-faq__q:hover .tpl-faq__q-ico::before,
+.tpl-faq__q:hover .tpl-faq__q-ico::after { background: var(--tpl-blue); }
+.tpl-faq__item.is-open .tpl-faq__q-ico {
+  transform: rotate(45deg);
+}
+.tpl-faq__item.is-open .tpl-faq__q-ico::before,
+.tpl-faq__item.is-open .tpl-faq__q-ico::after { background: var(--tpl-blue); }
+/* Antwort fliessend auf-/zuklappen (grid-rows-Technik, kein max-height) */
+.tpl-faq__a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-normal) var(--ease-out);
+}
+.tpl-faq__item.is-open .tpl-faq__a {
+  grid-template-rows: 1fr;
+}
+.tpl-faq__a-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+.tpl-faq__a-inner > p {
+  margin: 0 0 var(--space-6);
+  font-size: var(--text-base);
+  color: var(--tpl-muted);
+  line-height: 1.75;
+  max-width: 68ch;
+}
+.tpl-faq__a-inner > p:last-child { margin-bottom: 0; }
+
+/* ============================================================
+   ZURÜCK-LINK — editorial
+   ============================================================ */
+.tpl-back {
+  padding: 0;
+}
+.tpl-back__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding: var(--space-7) 0;
+  border-top: 1px solid var(--tpl-line);
+  border-bottom: 1px solid var(--tpl-line);
+}
+.tpl-back__inner > img,
+.tpl-back__inner > svg {
+  color: var(--tpl-blue);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.tpl-back__kicker {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tpl-muted);
+  margin-bottom: var(--space-1);
+}
+.tpl-back__link {
+  display: inline-block;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--tpl-ink);
+  position: relative;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.tpl-back__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 100%;
+  background: var(--tpl-blue);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+.tpl-back__link:hover { color: var(--tpl-blue); }
+.tpl-back__link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ============================================================
+   REVEAL — dezente Scroll-Animation
+   ============================================================ */
+.tpl-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  will-change: opacity, transform;
+}
+.tpl-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+.tpl-block .tpl-reveal { transition-delay: calc(0.05s * var(--i, 0)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tpl-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .tpl-hero__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+  .tpl-hero__media { max-width: 720px; margin-inline: auto; }
+  .tpl-benefits { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 820px) {
+  .tpl-section { padding: var(--space-20) 0; }
+  .tpl-section--first { padding-top: var(--space-16); }
+  .tpl-disclosure-section { padding: var(--space-12) 0 var(--space-10); }
+  .tpl-hero { padding: calc(var(--header-height) + var(--space-14)) 0 var(--space-16); }
+  .tpl-intro-grid { grid-template-columns: 1fr; gap: var(--space-12); }
+  .tpl-intro-grid::before { display: none; }
+  .offer-grid { gap: var(--space-6); }
+  .offer-grid--single .offer--visual .offer__body {
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+    gap: var(--space-7);
+  }
+  .offer-grid--single .offer--visual .offer__content,
+  .offer-grid--single .offer--visual .offer__visual {
+    grid-area: auto;
+  }
+  .offer-grid--single .offer {
+    padding: var(--space-8);
+  }
+}
+
+@media (max-width: 560px) {
+  .tpl-benefits { grid-template-columns: 1fr; gap: var(--space-10); }
+  .offer {
+    padding: var(--space-6) var(--space-6) var(--space-7);
+  }
+  .offer__head { margin-bottom: var(--space-7); }
+  .offer__benefits { margin-bottom: var(--space-7); }
+  .offer__ghost { font-size: 108px; }
+  .offer__shape { right: 42px; }
+  .offer__visual .bank-card { max-width: 300px; }
+  .offer-grid--single .offer {
+    padding: var(--space-6);
+  }
+  .offer-grid--single .offer--visual .offer__body { gap: var(--space-6); }
+  .tpl-hero__title { letter-spacing: -0.015em; }
+  .tpl-hero { padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-12); }
+  .tpl-cta { padding: var(--space-16) 0; }
+  .tpl-section { padding: var(--space-14) 0; }
+  .tpl-section--first { padding-top: var(--space-12); }
+  .tpl-disclosure-section { padding: var(--space-10) 0 var(--space-8); }
+  .tpl-intro-grid { gap: var(--space-10); }
+}
+
+/* Reduced motion (global redundant sichergestellt) */
+@media (prefers-reduced-motion: reduce) {
+  .offer,
+  .offer__chev,
+  .tpl-back__link::after,
+  .tpl-page .btn,
+  .tpl-page .btn::before,
+  .tpl-faq__a,
+  .tpl-faq__q-ico {
+    transition: none !important;
+    transform: none !important;
+  }
+}

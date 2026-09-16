@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Dein Start in Deutschland - robots.txt
+# Erlaube Google und anderen Suchmaschinen den Zugriff auf alle Seiten.
+
+Sitemap: https://www.dein-start-in-deutschland.de/sitemap.xml

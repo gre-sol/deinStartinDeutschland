@@ -1,118 +1,107 @@
-# Bilder & visuelle Elemente – „Sachen einlagern“
+# Bilderverzeichnis — Dein Start in Deutschland
 
-Diese Datei dokumentiert **alle** Bilder und Icons, die die Unterseite
-**„Sachen einlagern"** (`/sachen-einlagern`) verwendet.
+Zentrale Dokumentation **aller** Bilder, die auf den Affiliate-/Partner-Service-Seiten
+verwendet werden können.
 
-> **Konvention:** Icons liegen unter `Bilder/icons/`, Fotos unter `Bilder/bilder/`.
-> Die Seite referenziert die Dateien direkt per `<img src="Bilder/...">` mit
-> **exakt** den unten genannten Dateinamen. Lege die Dateien dort selbst ab –
-> während eine Datei fehlt, bleibt das Layout stabil (Platzhalter-Kasten).
+## Regeln
 
-**Stylegrundlage (bestehendes Design):**
-- Minimalismus & Swiss Style
-- Primärfarbe: `#2563EB` · Hell `#3B82F6` · Oberfläche `#FFFFFF` · Hintergrund `#FAFBFC`
-- Phase „Deutschland verlassen“: Slate `#475569`, Hintergrund `#F8FAFC`
-- Schrift: DM Sans / Inter, klare Hierarchie, viel Weißraum
-- Helle, freundliche, vertrauenswürdige Optik ohne aufdringliche Farbakzente
+- Alle zukünftigen Bilder sind standardmäßig **`.png`**.
+- Die Website nutzt ein Bild **nur**, wenn die Datei tatsächlich im passenden Ordner
+  existiert. Fehlt eine Datei, greift automatisch ein sauberer Platzhalter
+  (farbige Bankkarten-Grafik bzw. monochromes Fallback) – es erscheinen **nie**
+  kaputte Bildlinks.
+- Es werden **keine externen Stockbilder** verwendet und **keine Bild-URLs erfunden**.
+- Ordner-Struktur:
+  - `images/` – Hero-Bilder, Produktbilder, Bankkarten-Motive, Logos
+  - `Bilder/` – bestehende Website-Bilder (Logo, Icons), bleiben unverändert
 
----
+## Hinweis zur Datenstruktur
 
-## Ordnerstruktur
-
-```
-Bilder/
-├── icons/      # Icons (SVG oder transparentes PNG, 1:1) für den Seiten-Inhalt
-├── bilder/     # Fotos / größere Bilder
-├── logo.png    # Website-Logo (Header + Favicon) – nutze exakt diesen Namen
-└── PLATZIERHALTER.md
-```
+Alle Bildpfade werden zentral in `js/data.js` hinterlegt (Felder `heroImage`,
+`productImage`, `logo`). Eine Seite referenziert nur sich selbst – die Render-Funktion
+prüft die Existenz der Datei und fällt bei fehlender Datei auf den Platzhalter zurück.
 
 ---
 
-## Website-Logo (Header + Favicon)
+## 1. Service-Seiten
 
-- **Datei:** `Bilder/logo.png`
-- **Verwendung:** im Header aller Seiten und als Browser-Favicon.
-- **Beschreibung:** transparentes PNG des Firmen-/Website-Logos. Solange die Datei fehlt,
-  erscheint im Header nur der Text „Dein Start in Deutschland".
-- **Format:** PNG, transparent, hohe Auflösung (mind. 64px Höhe für den Header, für das
-  Favicon idealerweise quadratisch 64×64 oder größer).
+### 1.1 Bankkonto (`bankkonto.html`)
 
----
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `bankkonto-hero.png` | png | Hero-Bild der Bankkonto-Seite | Moderne Zusammenstellung aus Bankkarten (dezent, hell, hochwertig) – keine Logos, visuelle Aufbereitung | 1200 × 900 · 4:3 |
+| `bank-c24.png` | png | Produktbild C24 Konto | Einzelne C24-Bankkarte vor neutralem Hintergrund | 600 × 600 · 1:1 |
+| `bank-n26.png` | png | Produktbild N26 Standard | Einzelne N26-Bankkarte (schwarz) vor neutralem Hintergrund | 600 × 600 · 1:1 |
+| `bank-revolut.png` | png | Produktbild Revolut Standard | Einzelne Revolut-Bankkarte (dunkel) vor neutralem Hintergrund | 600 × 600 · 1:1 |
+| `bank-tfbank.png` | png | Produktbild TF Bank Girokonto | Einzelne TF-Bank-Karte vor neutralem Hintergrund | 600 × 600 · 1:1 |
+| `bank-advanzia.png` | png | Produktbild Advanzia Mastercard Gold | Einzelne goldene Mastercard-Kreditkarte vor neutralem Hintergrund | 600 × 600 · 1:1 |
 
-## A. Icons (`Bilder/icons/`)
+### 1.2 Kreditkarten (`kreditkarten.html`)
 
-### 1. Hero-Label
-- **Datei:** `box.svg`
-- **Verwendung:** im Label „Deutschland verlassen · Schritt 09"
-- **Beschreibung:** Karton / gepackte Kiste als Symbol für „Gepäck vorbereiten".
-- **Stil:** Linear-Strich, 1:1
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `kreditkarten-hero.png` | png | Hero-Bild der Kreditkarten-Seite | Moderne Zusammenstellung aus Kreditkarten (dezent, hochwertig) | 1200 × 900 · 4:3 |
+| `karte-advanzia-gold.png` | png | Produktbild Advanzia Mastercard Gold | Goldene Mastercard-Kreditkarte | 600 × 600 · 1:1 |
+| `karte-barclays.png` | png | Produktbild Barclays Visa | Barclays-Visa-Karte | 600 × 600 · 1:1 |
+| `karte-n26.png` | png | Produktbild N26 Kreditkarte | N26-Kreditkarte | 600 × 600 · 1:1 |
 
-### 2. Szenarien „Wann lohnt sich Einlagerung?"
-| Datei        | Szenario                                        |
-| ------------ | ------------------------------------------------ |
-| `globe.svg`  | Längerer Aufenthalt im Ausland                   |
-| `graduation.svg` | Auslandssemester / Studium                    |
-| `briefcase.svg`  | Neuer Job oder Projekt im Ausland             |
-| `compass.svg`    | Work & Travel                                |
-| `sun.svg`        | Sabbatical                                   |
-| `building.svg`   | Übergang zwischen zwei Wohnungen             |
-| `truck.svg`      | Umzug ins Ausland                            |
-| `home.svg`       | Untervermietung der bisherigen Wohnung       |
+### 1.3 Einlagerung / Sachen einlagern (`sachen-einlagern.html`)
 
-### 3. Karten „Welche Möglichkeiten gibt es?"
-| Datei             | Karte                                  |
-| ----------------- | -------------------------------------- |
-| `truck-delivery.svg` | Einlagerung mit Abholung & Rücklieferung |
-| `storage.svg`        | Self-Storage / eigene Lagerfläche     |
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `sachen-einlagern-hero.png` | png | Hero-Bild der Einlagerungs-Seite | Sauber gepackte Umzugskartons in einem hellen, modernen Lagerraum | 1200 × 900 · 4:3 |
+| `savespace-logo.png` | png | Anbieter-Logo SaveSpace | Offizielles SaveSpace-Logo auf transparentem Hintergrund | 200 × 200 · 1:1 |
 
-### 4. Chips „Was kann man einlagern?"
-| Datei           | Stichwort                  |
-| --------------- | -------------------------- |
-| `sofa.svg`      | Möbel                      |
-| `box-solid.svg` | Umzugskartons              |
-| `t-shirt.svg`   | Kleidung                   |
-| `cup.svg`       | Haushaltsgegenstände       |
-| `lock.svg`      | Persönliche Gegenstände    |
-| `bicycle.svg`   | Fahrräder                  |
+### 1.4 Internet & DSL (`internet.html`)
 
-### 5. Zurück-zur-Journey-Link
-- **Datei:** `arrow-down-circle.svg`
-- **Verwendung:** neben „Weitere Schritte für Deutschland verlassen entdecken"
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `internet-hero.png` | png | Hero-Bild der Internet-/DSL-Seite | Moderne Kombination aus DSL-/Kabel-/Glasfaser-Darstellung | 1200 × 900 · 4:3 |
 
----
+### 1.5 Strom & Energie (`strom-energie.html`)
 
-## B. Fotos (`Bilder/bilder/`)
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `strom-hero.png` | png | Hero-Bild der Strom-/Energie-Seite | Moderne Energie-/Strom-Darstellung | 1200 × 900 · 4:3 |
 
-### 6. Hero-Visual
-- **Datei:** `sachen-hero.png`
-- **Position:** Hero der Seite
-- **Beschreibung:** Moderne, minimalistische Aufnahme von gepackten Umzugskartons
-  in einem hellen, ordentlichen Lagerraum mit Regalen. Heller, freundlicher Stil,
-  dezente Abtönungen, viel Weißraum, keine unnötigen Details.
-- **Format:** 16:9 (≈ 1200×675) · aktuell: `sachen-hero.png` von dir eingefügt
+### 1.6 Versicherungen (`versicherungen.html`)
 
----
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `versicherung-hero.png` | png | Hero-Bild der Versicherungs-Seite | Moderne Versicherungs-/Schutz-Darstellung | 1200 × 900 · 4:3 |
 
-## C. Zusätzliche / optionale Elemente
+### 1.7 Geldtransfer (`geldtransfer.html`)
 
-### 7. SaveSpace – Partnerangebot (CTA-Bereich)
-- **Datei (optional):** `Bilder/bilder/savespace-logo.svg` (offizielles Logo)
-- **Verwendung:** Kennzeichnung des Partnerbereichs (Markenrichtlinien beachten)
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `geldtransfer-hero.png` | png | Hero-Bild der Geldtransfer-Seite | Moderne Geldtransfer-/Wechselkurs-Darstellung | 1200 × 900 · 4:3 |
 
-### 8. Sozial-Preview / Open Graph
-- **Datei (optional):** `Bilder/bilder/sachen-einlagern-og.jpg`
-- **Format:** 1200×630 (1.91:1)
-- **Verwendung:** `og:image` beim Teilen des Links
+### 1.8 ADAC & Mobilität (`adac-mobilitaet.html`)
+
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `adac-hero.png` | png | Hero-Bild der ADAC-/Mobilität-Seite | Moderne Mobilitäts-/Straßen-Darstellung | 1200 × 900 · 4:3 |
+
+### 1.9 Deutschlandticket (`deutschlandticket.html`)
+
+Es existiert **kein** dediziertes Hero-Bild. Die Seite nutzt im Hero das eingebaute
+geometrische Fallback (`.tpl-hero__noimg` – diagonaler Akzent, „DE“-Geisterzahl, ÖPNV-Icon).
+Soll zukünftig ein Bild verwendet werden, hier ablegen:
+
+| Dateiname | Endung | Verwendung | Beschreibung | Empfohlene Größe / Seitenverhältnis |
+|---|---|---|---|---|
+| `deutschlandticket-hero.png` | png | Hero-Bild der Deutschlandticket-Seite | Moderne ÖPNV-/Ticket-Darstellung (Bus & Bahn) | 1200 × 900 · 4:3 |
 
 ---
 
-## Richtlinien für alle Elemente
+## 2. Hinweise zur Bildqualität
 
-- **Keine Emojis** – ausschließlich professionelle Icon-Dateien.
-- **Konsistenter Stil** – gleiche Linienbreite, gleiche Farbtöne (`#2563EB`,
-  `#475569`, Grautöne), gleicher Abstand pro Icon.
-- **Barrierefreiheit** – dekorative Icons mit leerem `alt`/`aria-hidden`;
-  bedeutungstragende Fotos mit aussagekräftigem `alt`.
-- **Leistung** – Icons als SVG bevorzugen (skalierbar, klein); Fotos optimieren
-  (WebP/JPEG, passende Größe, `loading="lazy"`).
+- **Hero-Bilder** (1200 × 900): großzügiger Weißraum, dezente, helle Farbgebung,
+  hochwertige Produktfotografie bzw. eine reine Gestaltungs-Aufbereitung. Text wird
+  nicht in Bildern platziert (SEO).
+- **Produktbilder / Bankkarten** (600 × 600): einzelnes Objekt, mittig, auf
+  neutralem (hellen) Hintergrund, keine Logos mit Fremdrechten. Die Kartenfläche
+  wird im Template bereits als reine CSS-/SVG-Grafik in einheitlichem Seitenverhältnis
+  gerendert – ein echtes PNG ersetzt diese nur, wenn es vorhanden ist.
+- **Logos** (200 × 200): offizielle Markenlogos, transparent, mit ausreichendem
+  Sicherheitsabstand (clear space). Nicht recolorieren oder verzerren.
