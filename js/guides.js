@@ -2274,6 +2274,65 @@ const GUIDES = [
       { slug: 'fahrrad', label: 'Fahrrad' },
     ],
   },
+  {
+    slug: 'einbuergerung',
+    phase: 'integration',
+    phaseTitle: 'Sprache & Integration',
+    phaseNumber: '07',
+    step: 10,
+    icon: 'heart',
+    nav: 'Einbürgerung',
+    seo: {
+      title: 'Einbürgerung in Deutschland: Voraussetzungen & Ablauf',
+      description: 'Deutsche Staatsbürgerschaft beantragen: Voraussetzungen, Fristen, Kosten und Ablauf der Einbürgerung in Deutschland – klar und verständlich erklärt.',
+      keywords: 'Einbürgerung Deutschland, deutsche Staatsbürgerschaft, Einbürgerung beantragen, Voraussetzungen, Staatsangehörigkeit',
+    },
+    hero: {
+      title: 'Einbürgerung',
+      accent: 'den Weg zur deutschen Staatsbürgerschaft',
+      subtitle: 'Die Einbürgerung ist der letzte große Schritt der Integration: Wer die Voraussetzungen erfüllt, kann die deutsche Staatsbürgerschaft beantragen. Wir erklären die wichtigsten Punkte.',
+      tag: 'Sprache & Integration',
+      meta: ['Voraussetzungen', 'Ablauf & Kosten', 'Für Neuankömmlinge'],
+    },
+    intro: [
+      { icon: 'heart', title: 'Der letzte Schritt', text: 'Die Einbürgerung ist der formale Abschluss deiner Integration – mit der deutschen Staatsbürgerschaft erhältst du alle Rechte.' },
+      { icon: 'doc', title: 'Voraussetzungen prüfen', text: 'In der Regel brauchst du ausreichende Deutschkenntnisse, einen gesicherten Lebensunterhalt und eine gültige Aufenthaltsperspektive.' },
+      { icon: 'clock', title: 'Fristen einplanen', text: 'Der Antrag ist ein Behördengang mit Unterlagen – Plane ausreichend Zeit für Prüfung und Bearbeitung ein.' },
+    ],
+    section: {
+      kicker: 'Deine Einbürgerung planen',
+      title: 'So läuft die Einbürgerung ab',
+      paragraphs: [
+        'Bei der Einbürgerung erwirbst du die deutsche Staatsbürgerschaft. Grundsätzlich ist sie möglich, wenn du rechtmäßig in Deutschland lebst, über ausreichende Deutschkenntnisse (in der Regel ab B1) verfügbar und deinen Lebensunterhalt ohne Sozialleistungen bestreitest. Die genauen Voraussetzungen hängen von deiner Situation ab.',
+        'Der Antrag läuft bei der Einbürgerungsbehörde deines Wohnortes. Mitgebracht werden in der Regel Identitätsnachweis, Aufenthaltstitel, Nachweise über Deutschkenntnisse, Einkommen und gegebenenfalls ein Bekenntnis zur freiheitlichen demokratischen Grundordnung.',
+        'Nach Prüfung entscheidet die Behörde über deinen Antrag. Bei Erfolg erhältst du die Einbürgerungsurkunde und mit einer feierlichen Übergabe deine neue Staatsbürgerschaft. Auch die Aufgabe der bisherigen Staatsbürgerschaft kann Thema sein – kläre dies frühzeitig mit der Behörde.',
+      ],
+      listTitle: 'Das solltest du für den Antrag vorbereiten',
+      list: [
+        'Ausreichende Deutschkenntnisse (in der Regel mindestens B1)',
+        'Gesicherter Lebensunterhalt ohne Sozialleistungen',
+        'Gültiger Aufenthaltstitel und Wohnsitz in Deutschland',
+        'Bekenntnis zur freiheitlichen demokratischen Grundordnung',
+        'Nachweise über Identität, Einkommen und ggf. früheren Wohnsitz',
+      ],
+    },
+    benefits: [
+      { icon: 'heart', title: 'Volle Rechte', text: 'Die Staatsbürgerschaft bringt uneingeschränkte Rechte und Teilhabe.' },
+      { icon: 'shield', title: 'Rechtssicher', text: 'Mit dem Pass bist du dauerhaft und unabhängig von Aufenthaltstiteln.' },
+      { icon: 'users', title: 'Teil der Gesellschaft', text: 'Die Einbürgerung ist der sichtbare Abschluss deiner Integration.' },
+    ],
+    faq: [
+      { q: 'Welche Voraussetzungen gibt es für die Einbürgerung?', a: ['In der Regel verlangen die Behörden eine gültige Aufenthaltsperspektive, ausreichende Deutschkenntnisse (etwa B1), einen gesicherten Lebensunterhalt und ein Bekenntnis zur freiheitlichen demokratischen Grundordnung. Die Details hängen von deiner Situation ab.'] },
+      { q: 'Wie lange muss ich in Deutschland leben?', a: ['In der Regel sind mehrere Jahre rechtmäßigen Aufenthalts in Deutschland Voraussetzung. Die genauen Fristen findest du bei der zuständigen Einbürgerungsbehörde.'] },
+      { q: 'Was kostet die Einbürgerung?', a: ['Für die Einbürgerung fallen Gebühren an, die je nach Kommune variieren. Erkundige dich vor dem Antrag bei deiner Einbürgerungsbehörde nach den konkreten Kosten.'] },
+      { q: 'Muss ich meine bisherige Staatsbürgerschaft aufgeben?', a: ['Das hängt von den Regelungen deines Herkunftslandes und der deutschen Gesetzgebung ab. Kläre diese Frage frühzeitig mit der Einbürgerungsbehörde.'] },
+      { q: 'Wo stelle ich den Antrag?', a: ['Den Antrag stellst du bei der Einbürgerungsbehörde deines Wohnortes. Viele Städte bieten dafür Online-Formulare und Beratungstermine an.'] },
+    ],
+    related: [
+      { slug: 'integrationskurs', label: 'Integrationskurs' },
+      { slug: 'deutsch-lernen', label: 'Deutsch lernen' },
+    ],
+  },
 
   /* ============================================================
      PHASE 08 — ALLTAG & DIGITALE SERVICES

@@ -40,8 +40,6 @@ const jsonLd = (obj) =>
 const svg = (iconKey, w = 22, h = 22, cls = '') =>
   `<svg class="${cls ? escAttr(cls) : ''}" width="${w}" height="${h}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[iconKey] || ICONS.doc}</svg>`;
 
-const checkSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS.check}</svg>`;
-
 // ------------------------------------------------------------------
 // SVG line-icons (feather-/lucide-style, stroke-based)
 // ------------------------------------------------------------------
@@ -74,6 +72,8 @@ const ICONS = {
   phone: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
   arrowLeft: '<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',
 };
+
+const checkSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS.check}</svg>`;
 
 // ------------------------------------------------------------------
 // Template fragments (structure copied from internet.html)

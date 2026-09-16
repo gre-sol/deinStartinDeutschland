@@ -445,25 +445,40 @@
         })
         .join('');
 
-      const items = $$('.tpl-faq__item', mount);
-      items.forEach((item) => {
-        const q = $('.tpl-faq__q', item);
-        q.addEventListener('click', () => {
-          const wasOpen = item.classList.contains('is-open');
-          items.forEach((el) => {
-            el.classList.remove('is-open');
-            const b = $('.tpl-faq__q', el);
-            if (b) b.setAttribute('aria-expanded', 'false');
-          });
-          if (!wasOpen) {
-            item.classList.add('is-open');
-            q.setAttribute('aria-expanded', 'true');
-          }
-        });
-      });
-
+      bindFaqAccordion(mount);
       injectFaqLd(page.faq);
     });
+  }
+
+  // Wire up the accordion behaviour for a FAQ container. Used for both
+  // data-driven (JS-rendered) and static (generated) guide pages.
+  function bindFaqAccordion(container) {
+    if (!container) return;
+    const items = $$('.tpl-faq__item', container);
+    items.forEach((item) => {
+      if (item.dataset.faqWired) return;
+      item.dataset.faqWired = 'true';
+      const q = $('.tpl-faq__q', item);
+      if (!q) return;
+      q.addEventListener('click', () => {
+        const wasOpen = item.classList.contains('is-open');
+        items.forEach((el) => {
+          el.classList.remove('is-open');
+          const b = $('.tpl-faq__q', el);
+          if (b) b.setAttribute('aria-expanded', 'false');
+        });
+        if (!wasOpen) {
+          item.classList.add('is-open');
+          q.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  }
+
+  // Static FAQ accordions on generated guide pages (built by
+  // tools/generate-guides.js) – no JS rendering needed.
+  function initStaticFaq() {
+    $$('.tpl-faq[data-static-faq]').forEach(bindFaqAccordion);
   }
 
   // ============================================
@@ -1027,6 +1042,7 @@
     renderServices();
     renderServiceCards();
     renderFaq();
+    initStaticFaq();
     initSmoothScroll();
     initReveal();
 
