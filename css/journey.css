@@ -492,6 +492,40 @@
   color: var(--color-text-tertiary);
 }
 
+/* ---- Chip variants (compare / info) ---- */
+.provider-chip--compare {
+  border-color: var(--color-primary-lighter);
+  background: var(--color-primary-surface);
+  color: var(--color-primary);
+}
+
+.provider-chip--compare:hover {
+  border-color: var(--color-primary-light);
+  background: var(--color-primary-lighter);
+}
+
+.provider-chip--compare .provider-chip__name {
+  color: var(--color-primary);
+}
+
+.provider-chip--compare .provider-chip__flag {
+  color: var(--color-primary-dark);
+  background: var(--color-primary-lighter);
+}
+
+.provider-chip__icon {
+  flex-shrink: 0;
+}
+
+.provider-chip--info {
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.provider-chip--info:hover {
+  border-color: var(--color-text-tertiary);
+}
+
 /* ---- Journey disclosure ---- */
 .journey__disclosure {
   margin-top: var(--space-8);

@@ -101,18 +101,22 @@
       </a>`;
   }
 
-  // "Artikel" status chip for informational internal-page themes.
-  function infoChip() {
+  // "Anbieter" status chip for informational internal-page themes.
+  // Links to the corresponding internal page, like the other journey chips.
+  function infoChip(item) {
+    const url = internalUrlFor(item);
     return `
-      <span class="provider-chip provider-chip--info" aria-hidden="true">
+      <a href="${esc(url)}"
+         class="provider-chip provider-chip--info"
+         aria-label="${esc(item.title)} – Seite öffnen">
         <svg class="provider-chip__icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="3" y="3" width="18" height="18" rx="2"/>
           <line x1="8" y1="12" x2="16" y2="12"/>
           <line x1="8" y1="16" x2="12" y2="16"/>
         </svg>
-        <span class="provider-chip__name">Artikel</span>
-      </span>`;
+        <span class="provider-chip__name">Anbieter</span>
+      </a>`;
   }
 
   // Recognized "product card" art tokens. When a provider's `image` field
@@ -485,7 +489,6 @@
   // HEADER — scroll effect
   // ============================================
   const header = $('.header');
-  let lastScroll = 0;
 
   function onScroll() {
     const y = window.scrollY;
@@ -494,7 +497,6 @@
     } else {
       header.classList.remove('header--scrolled');
     }
-    lastScroll = y;
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -559,8 +561,6 @@
       phaseEl.setAttribute('data-phase', phase.id);
       phaseEl.setAttribute('role', 'listitem');
 
-      const availableCount = phase.items.filter((i) => i.status !== 'coming-soon').length;
-
       phaseEl.innerHTML = `
         <div class="journey__node" aria-hidden="true">${phase.icon}</div>
         <div class="journey__card" tabindex="0" role="button" aria-expanded="false"
@@ -603,12 +603,12 @@
                   chips = compareChip(item, count || (providers.length || 1));
                 } else if (status === 'internal-page') {
                   // Information article (no external offers).
-                  chips = infoChip();
+                  chips = infoChip(item);
                 } else if (status === 'affiliate') {
                   // Single affiliate offer → internal page keeps the offer card.
                   chips = providers.length
                     ? providers.map((p) => providerChip(p, item.title, internalUrlFor(item))).join('')
-                    : infoChip();
+                    : infoChip(item);
                 } else {
                   // provider (e.g. GRE service) → chip links to the provider
                   // directly, or internally when a service page exists.
@@ -890,89 +890,6 @@
   }
 
   // ============================================
-  // SERVICES — render grid
-  // ============================================
-  function renderServices() {
-    const grid = $('#services-grid');
-    if (!grid || typeof SERVICE_CATEGORIES === 'undefined') return;
-
-    grid.innerHTML = SERVICE_CATEGORIES.map((cat) => {
-      const availableServices = cat.services.filter((s) => s.available);
-      const totalServices = cat.services.length;
-
-      return `
-        <article class="service-card" data-color="${cat.colorVar}" tabindex="0" role="link"
-                 aria-label="${cat.title} – ${cat.description}">
-          <div class="service-card__icon" aria-hidden="true">${cat.icon}</div>
-          <h2 class="service-card__title">${cat.title}</h2>
-          <p class="service-card__desc">${cat.description}</p>
-          <div class="service-card__items">
-            ${cat.services
-              .slice(0, 4)
-              .map(
-                (s) =>
-                  `<span class="service-card__item ${s.available ? 'service-card__item--available' : ''}">${s.title}</span>`
-              )
-              .join('')}
-            ${totalServices > 4 ? `<span class="service-card__item">+${totalServices - 4} weitere</span>` : ''}
-          </div>
-          <div class="service-card__footer">
-            <span class="service-card__cta">
-              Entdecken
-              <span class="service-card__cta-arrow" aria-hidden="true">→</span>
-            </span>
-            <span class="service-card__count">${totalServices} Services</span>
-          </div>
-        </article>
-      `;
-    }).join('');
-
-    // Make cards clickable
-    $$('.service-card', grid).forEach((card, index) => {
-      const cat = SERVICE_CATEGORIES[index];
-      function navigate() {
-        if (cat.journeyLink) {
-          // Navigate to homepage journey section
-          window.location.href = `index.html#journey`;
-        }
-      }
-
-      card.addEventListener('click', navigate);
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          navigate();
-        }
-      });
-    });
-
-    // Entrance animations
-    if (!prefersReducedMotion && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry, i) => {
-            if (entry.isIntersecting) {
-              setTimeout(() => {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-              }, i * 80);
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-
-      $$('.service-card', grid).forEach((card) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
-        observer.observe(card);
-      });
-    }
-  }
-
-  // ============================================
   // SMOOTH SCROLL for anchor links
   // ============================================
   function initSmoothScroll() {
@@ -1039,7 +956,6 @@
   // ============================================
   function init() {
     renderJourney();
-    renderServices();
     renderServiceCards();
     renderFaq();
     initStaticFaq();

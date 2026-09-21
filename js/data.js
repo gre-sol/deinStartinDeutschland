@@ -3,14 +3,6 @@
    Central data management for Journey & Services
    ============================================ */
 
-const SITE = {
-  name: 'Dein Start in Deutschland',
-  tagline: 'Die wichtigsten Schritte – einfach erklärt und Schritt für Schritt.',
-  description: 'Du bist neu in Deutschland? Entdecke die wichtigsten Themen für deinen Start und finde schnell die passenden Services und Informationen.',
-  url: '',
-  lang: 'de',
-};
-
 const JOURNEY_PHASES = [
   {
     id: 'ankommen',
@@ -149,8 +141,6 @@ const JOURNEY_PHASES = [
       { title: 'Online-Banking', slug: 'online-banking', status: 'internal-page' },
       { title: 'Behördenportale', slug: 'behoerdenportale', status: 'internal-page' },
       { title: 'Wichtige Apps', slug: 'wichtige-apps', status: 'internal-page' },
-      { title: 'Internetanbieter', slug: 'internet-anbieter', status: 'multiple-providers' },
-      { title: 'Rundfunkbeitrag', slug: 'rundfunkbeitrag', status: 'internal-page' },
       { title: 'Weitere Services', slug: 'weitere-services', status: 'internal-page' },
     ],
   },
@@ -169,133 +159,6 @@ const JOURNEY_PHASES = [
       { title: 'Sachen einlagern', slug: 'sachen-einlagern', status: 'affiliate' },
       { title: 'Post & Dokumente', slug: 'post-dokumente-abreise', status: 'internal-page' },
       { title: 'Rückkehr nach Deutschland', slug: 'rueckkehr-deutschland', status: 'internal-page' },
-    ],
-  },
-];
-
-const SERVICE_CATEGORIES = [
-  {
-    id: 'wohnen',
-    icon: '🏠',
-    title: 'Wohnen',
-    description: 'Wohnung, Anmeldung & Relocation',
-    colorVar: 'wohnen',
-    journeyLink: 'wohnen',
-    services: [
-      { title: 'Wohnungssuche', slug: 'wohnungssuche', available: false, type: 'internal' },
-      { title: 'Relocation-Unterstützung', slug: 'relocation', available: false, type: 'internal' },
-      { title: 'Mietvertrag', slug: 'mietvertrag', available: false, type: 'internal' },
-      { title: 'Anmeldung', slug: 'anmeldung', available: false, type: 'internal' },
-      { title: 'Gas, Strom & Wasser', slug: 'gas-strom-wasser-service', available: false, type: 'internal' },
-      { title: 'Internet & Rundfunkbeitrag', slug: 'internet-rundfunk', available: false, type: 'internal' },
-      { title: 'Wohnungsbezogene Services', slug: 'wohnungs-services', available: false, type: 'internal' },
-    ],
-  },
-  {
-    id: 'behoerden',
-    icon: '🪪',
-    title: 'Behörden & Dokumente',
-    description: 'Anmeldung, Aufenthalt, Übersetzungen',
-    colorVar: 'aufenthalt',
-    journeyLink: 'aufenthalt',
-    services: [
-      { title: 'Anmeldung', slug: 'anmeldung-behoerde', available: false, type: 'internal' },
-      { title: 'Aufenthalt', slug: 'aufenthalt-service', available: false, type: 'internal' },
-      { title: 'Ausländerbehörde', slug: 'auslaenderbehoerde-service', available: false, type: 'internal' },
-      { title: 'Dokumente', slug: 'dokumente', available: false, type: 'internal' },
-      { title: 'Übersetzungen', slug: 'uebersetzungen', available: false, type: 'internal' },
-      { title: 'Behördliche Unterstützung', slug: 'behoerdsupport', available: false, type: 'internal' },
-    ],
-  },
-  {
-    id: 'mobilitaet',
-    icon: '🚗',
-    title: 'Mobilität',
-    description: 'Führerschein, Auto & Deutschlandticket',
-    colorVar: 'mobilitaet',
-    journeyLink: 'mobilitaet',
-    services: [
-      { title: 'Führerschein', slug: 'fuehrerschein-service', available: false, type: 'internal' },
-      { title: 'Auto', slug: 'auto-service', available: false, type: 'internal' },
-      { title: 'Versicherung', slug: 'auto-versicherung', available: false, type: 'internal' },
-      { title: 'Deutschlandticket', slug: 'deutschlandticket-service', available: false, type: 'internal' },
-      { title: 'Fahrzeugbezogene Services', slug: 'fahrzeug-services', available: false, type: 'internal' },
-    ],
-  },
-  {
-    id: 'versicherungen',
-    icon: '🛡',
-    title: 'Versicherungen',
-    description: 'Krankenversicherung, Haftpflicht & mehr',
-    colorVar: 'versicherungen',
-    journeyLink: 'versicherungen',
-    services: [
-      { title: 'Krankenversicherung', slug: 'krankenversicherung-service', available: false, type: 'internal' },
-      { title: 'Privathaftpflicht', slug: 'privathaftpflicht-service', available: false, type: 'internal' },
-      { title: 'Hausratversicherung', slug: 'hausratversicherung-service', available: false, type: 'internal' },
-      { title: 'Weitere Versicherungen', slug: 'weitere-versicherungen-service', available: false, type: 'internal' },
-    ],
-  },
-  {
-    id: 'finanzen',
-    icon: '🏦',
-    title: 'Finanzen',
-    description: 'Bankkonto, Geldtransfer & Steuern',
-    colorVar: 'finanzen',
-    journeyLink: 'finanzen',
-    services: [
-      { title: 'Bankkonto', slug: 'bankkonto-service', available: false, type: 'internal' },
-      { title: 'Geldtransfer', slug: 'geldtransfer', available: false, type: 'internal' },
-      { title: 'Kindergeld', slug: 'kindergeld-service', available: false, type: 'internal' },
-      { title: 'Steuern', slug: 'steuern-service', available: false, type: 'internal' },
-      { title: 'Sozialleistungen', slug: 'sozialleistungen-service', available: false, type: 'internal' },
-      { title: 'Finanzielle Services', slug: 'finanz-services', available: false, type: 'internal' },
-    ],
-  },
-  {
-    id: 'integration',
-    icon: '🗣',
-    title: 'Sprache & Integration',
-    description: 'Deutschkurse, Integrationskurse & Community',
-    colorVar: 'integration',
-    journeyLink: 'integration',
-    services: [
-      { title: 'Deutschkurse', slug: 'deutschkurse', available: false, type: 'internal' },
-      { title: 'Integrationskurse', slug: 'integrationskurse', available: false, type: 'internal' },
-      { title: 'Sprachpartner', slug: 'sprachpartner', available: false, type: 'internal' },
-      { title: 'Schule & Kindergarten', slug: 'schule-kindergarten', available: false, type: 'internal' },
-      { title: 'Community', slug: 'community-service', available: false, type: 'internal' },
-      { title: 'Freizeit', slug: 'freizeit-service', available: false, type: 'internal' },
-    ],
-  },
-  {
-    id: 'karriere',
-    icon: '💼',
-    title: 'Arbeit & Karriere',
-    description: 'Jobs, Bewerbungen & Anerkennung',
-    colorVar: 'ankommen',
-    journeyLink: null,
-    services: [
-      { title: 'Jobs finden', slug: 'jobs-finden', available: false, type: 'internal' },
-      { title: 'Bewerbungen', slug: 'bewerbungen', available: false, type: 'internal' },
-      { title: 'Lebenslauf', slug: 'lebenslauf', available: false, type: 'internal' },
-      { title: 'Anerkennung von Abschlüssen', slug: 'abschluesse', available: false, type: 'internal' },
-      { title: 'Karriereberatung', slug: 'karriereberatung', available: false, type: 'internal' },
-    ],
-  },
-  {
-    id: 'digital',
-    icon: '💻',
-    title: 'Digitale Services',
-    description: 'Online-Banking, Apps & Internet',
-    colorVar: 'alltag',
-    journeyLink: 'alltag',
-    services: [
-      { title: 'Online-Banking', slug: 'online-banking-service', available: false, type: 'internal' },
-      { title: 'Behördenportale', slug: 'behoerdenportale-service', available: false, type: 'internal' },
-      { title: 'Apps', slug: 'apps-service', available: false, type: 'internal' },
-      { title: 'Internet', slug: 'internet-service', available: false, type: 'internal' },
-      { title: 'Digitale Dienstleistungen', slug: 'digitale-dienste', available: false, type: 'internal' },
     ],
   },
 ];
@@ -375,7 +238,6 @@ const JOURNEY_PROVIDERS = {
   'krankenversicherung': ['gre'],
   'privathaftpflicht': ['gre'],
   'hausratversicherung': ['gre'],
-  'weitere-versicherungen': ['gre'],
   // Phase 07 – Sprache & Integration
   'deutsch-lernen': ['gre'],
   'integrationskurs': ['gre'],
@@ -390,8 +252,6 @@ const JOURNEY_PROVIDERS = {
   'online-banking': ['gre'],
   'behoerdenportale': ['gre'],
   'wichtige-apps': ['gre'],
-  'internet-anbieter': ['gre'],
-  'rundfunkbeitrag': ['gre'],
   'weitere-services': ['gre'],
   // Phase 09 – Deutschland verlassen
   'voruebergehend-abwesend': ['gre'],
@@ -428,7 +288,7 @@ const SERVICE_PAGES = [
     phase: 'alltag',
     kicker: 'Alltag & Digitale Services',
     step: '2',
-    journeySlugs: ['sim-karte-internet', 'internet-router', 'internet-anbieter'],
+    journeySlugs: ['sim-karte-internet', 'internet-router'],
     seo: {
       title: 'Internet & DSL in Deutschland: Anbieter vergleichen',
       metaDescription: 'Internet-Anbieter für deinen Start in Deutschland: Dein DSL, Kabel oder Glasfaser flexibel vergleichen – transparent, ohne Kosten, mit klaren Informationen für Neuankömmlinge.',
@@ -524,7 +384,7 @@ const SERVICE_PAGES = [
     phase: 'wohnen',
     kicker: 'Wohnen & Anmeldung',
     step: '1',
-    journeySlugs: ['gas-strom-wasser', 'strom-energie'],
+    journeySlugs: ['gas-strom-wasser'],
     seo: {
       title: 'Stromanbieter in Deutschland: Tarife vergleichen',
       metaDescription: 'Strom & Energie für deine neue Wohnung: Anbieter und Tarife transparent vergleichen. Alles, was Neuankömmlinge zur Anmeldung und Auswahl des Stromtarifs wissen müssen.',
@@ -713,6 +573,15 @@ const SERVICE_PAGES = [
         url: '[TODO] tfbank-affiliate-link',
         type: 'affiliate',
       },
+      {
+        name: 'German Relo Experts (GRE)',
+        logo: 'Bilder/icons/gre-logo.png',
+        description: 'Wir unterstützen dich bei der Wahl und Eröffnung deines Bankkontos – Teil unseres Begleitservice.',
+        benefits: ['Beratung zur passenden Bank', 'Hilfe bei der Kontoeröffnung', 'Persönlicher Ansprechpartner vor Ort'],
+        bonus: '',
+        url: 'https://g-reloexperts.com/',
+        type: 'service',
+      },
     ],
     faq: [
       {
@@ -831,6 +700,15 @@ const SERVICE_PAGES = [
         bonus: 'Aktuelle Karten-Boni je nach Anbieter',
         url: '[TODO] check24-kreditkarte-affiliate-link',
         type: 'affiliate',
+      },
+      {
+        name: 'German Relo Experts (GRE)',
+        logo: 'Bilder/icons/gre-logo.png',
+        description: 'Wir helfen dir, die passende Kreditkarte zu finden und zu beantragen – Teil unseres Begleitservice.',
+        benefits: ['Beratung zu Kredit- und Debitkarten', 'Unterstützung bei der Beantragung', 'Persönlicher Ansprechpartner vor Ort'],
+        bonus: '',
+        url: 'https://g-reloexperts.com/',
+        type: 'service',
       },
     ],
     faq: [
@@ -952,7 +830,7 @@ const SERVICE_PAGES = [
     phase: 'versicherungen',
     kicker: 'Versicherungen',
     step: '6',
-    journeySlugs: ['versicherungen', 'weitere-versicherungen'],
+    journeySlugs: ['versicherungen'],
     seo: {
       title: 'Versicherungen in Deutschland: Haftpflicht, Hausrat & mehr',
       metaDescription: 'Welche Versicherungen brauchst du in Deutschland? Privathaftpflicht, Hausrat und mehr – verständlich erklärt und übersichtlich vergleichbar.',
@@ -1030,7 +908,7 @@ const SERVICE_PAGES = [
     phase: 'finanzen',
     kicker: 'Finanzen',
     step: '7',
-    journeySlugs: ['ueberweisungen', 'geldtransfer'],
+    journeySlugs: ['ueberweisungen'],
     seo: {
       title: 'Geld nach Deutschland & ins Ausland senden: Vergleich',
       metaDescription: 'Geld transferieren zwischen Deutschland und dem Ausland: Anbieter vergleichen, Wechselkurse verstehen und kostengünstig senden. Klare Tipps für Neuankömmlinge.',
@@ -1066,15 +944,6 @@ const SERVICE_PAGES = [
         bonus: '',
         url: '[TODO] westernunion-affiliate-link',
         type: 'affiliate',
-      },
-      {
-        name: 'German Relo Experts (GRE)',
-        logo: 'Bilder/icons/gre-logo.png',
-        description: 'Wir erklären dir die günstigsten Wege, dein Geld nach Deutschland zu bringen – und unterstützen dich bei der Einrichtung deines ersten Kontos.',
-        benefits: ['Beratung zu Geldtransfer & Konto', 'Hilfe bei der Einrichtung', 'Verständliche Erklärung der Kosten'],
-        bonus: '',
-        url: 'https://g-reloexperts.com/',
-        type: 'service',
       },
     ],
     faq: [
@@ -1153,6 +1022,15 @@ const SERVICE_PAGES = [
         bonus: '',
         url: '[TODO] jobticket-info',
         type: 'recommendation',
+      },
+      {
+        name: 'German Relo Experts (GRE)',
+        logo: 'Bilder/icons/gre-logo.png',
+        description: 'Wir unterstützen dich beim Kauf und der Einrichtung deines Deutschlandtickets – Teil unseres Begleitservice.',
+        benefits: ['Hilfe beim Ticketkauf', 'Unterstützung bei der Einrichtung in der App', 'Persönlicher Ansprechpartner vor Ort'],
+        bonus: '',
+        url: 'https://g-reloexperts.com/',
+        type: 'service',
       },
     ],
     faq: [
@@ -1269,21 +1147,3 @@ const SERVICE_PAGES = [
     ],
   },
 ];
-
-const NAV_LINKS = [
-  { label: 'Startseite', href: 'index.html', id: 'home' },
-];
-
-const FOOTER_LINKS = {
-  navigation: [
-    { label: 'Startseite', href: 'index.html' },
-  ],
-  legal: [
-    { label: 'Impressum', href: 'impressum.html', available: false },
-    { label: 'Datenschutz', href: 'datenschutz.html', available: false },
-  ],
-  info: [
-    { label: 'Über uns', href: 'ueber-uns.html', available: false },
-    { label: 'Kontakt', href: 'kontakt.html', available: false },
-  ],
-};
